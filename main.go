@@ -1,4 +1,3 @@
-
 package main
 
 import (
@@ -8,12 +7,13 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/lib/pq"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"github.com/joho/godotenv"
 )
 
 // Модели данных для PostgreSQL
@@ -123,6 +123,23 @@ func main() {
 	initDB()
 
 	r := gin.Default()
+	// 1) Статика Vite
+	r.Static("/assets", "./dist/assets")
+
+	// 2) Главная страница
+	r.GET("/", func(c *gin.Context) {
+		c.File("./dist/index.html")
+	})
+
+	// 3) SPA fallback: все, что не /api — отдаём index.html
+	r.NoRoute(func(c *gin.Context) {
+		path := c.Request.URL.Path
+		if strings.HasPrefix(path, "/api") {
+			c.JSON(http.StatusNotFound, gin.H{"error": "not found"})
+			return
+		}
+		c.File("./dist/index.html")
+	})
 
 	// CORS Middleware
 	r.Use(func(c *gin.Context) {
