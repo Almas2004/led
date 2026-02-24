@@ -27,7 +27,7 @@ export const AdminDashboard: React.FC = () => {
       setError(null);
     } catch (e) {
       setIsBackendOnline(false);
-      setError("Бэкенд недоступен. Убедитесь, что Go-сервер запущен на порту 8080.");
+      setError("Бэкенд недоступен. Убедитесь, что Go-сервер запущен на порту 8082.");
     }
   };
 

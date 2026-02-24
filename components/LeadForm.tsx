@@ -49,7 +49,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({
       setIsSuccess(true);
       setFormData({ name: '', phone: '', city: '', message: '' });
     } catch (error) {
-      alert("Ошибка соединения с сервером. Пожалуйста, убедитесь, что Go бэкенд запущен на порту 8080.");
+      alert("Ошибка соединения с сервером. Пожалуйста, убедитесь, что Go бэкенд запущен на порту 8082.");
     } finally {
       setIsSubmitting(false);
     }

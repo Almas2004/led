@@ -25,7 +25,7 @@ RUN apk add --no-cache ca-certificates
 COPY --from=backend /app/ledvision-api /app/ledvision-api
 COPY --from=frontend /app/dist /app/dist
 
-# порт укажи тот, который реально слушает Go (если :8080 — оставь)
+# порт укажи тот, который реально слушает Go (если :8082 — оставь)
 EXPOSE 8082
 ENV PORT=8082
 
