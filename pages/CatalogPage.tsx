@@ -67,13 +67,13 @@ export const CatalogPage: React.FC = () => {
               onClick={() => toggleType(ScreenType.INDOOR)}
               className={`px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${typeFilter === ScreenType.INDOOR ? 'bg-white shadow-lg text-blue-600' : 'text-slate-500 hover:text-slate-900'}`}
             >
-              Для интерьера
+              Внутренние
             </button>
             <button 
               onClick={() => toggleType(ScreenType.OUTDOOR)}
               className={`px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${typeFilter === ScreenType.OUTDOOR ? 'bg-white shadow-lg text-blue-600' : 'text-slate-500 hover:text-slate-900'}`}
             >
-              Для улицы
+              Уличные
             </button>
           </div>
         </div>
@@ -112,7 +112,7 @@ export const CatalogPage: React.FC = () => {
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Сфера применения</label>
                 <div className="space-y-3">
-                  {['Реклама', 'Витрина', 'Сцена', 'Спорт', 'Конференции'].map(p => (
+                  {['Реклама', 'Образования', 'Сцена', 'Спорт', 'Конференц залы', 'Теле-студий'].map(p => (
                     <label key={p} className="flex items-center gap-3 cursor-pointer group">
                       <input 
                         type="checkbox" 
