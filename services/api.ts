@@ -3,7 +3,7 @@ import { Product, Solution, Case, Lead, ScreenType, LeadStatus } from '../types'
 
 // API_BASE указывает на локальный Go-сервер. 
 // ВНИМАНИЕ: Если вы запускаете бэкенд на другом порту или сервере, измените этот адрес.
-const API_BASE = 'http://localhost:8080/api';
+const API_BASE = 'http://localhost:8082/api';
 
 /**
  * Вспомогательная функция для обработки ответов от сервера.
