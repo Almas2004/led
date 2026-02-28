@@ -39,7 +39,14 @@ export const HomePage: React.FC = () => {
   return (
     <div className="pt-20">
       {/* Hero Section */}
-      <section className="relative h-[85vh] flex items-center overflow-hidden bg-slate-900">
+      <section
+  className="
+    relative flex items-center
+    min-h-[85vh] h-auto
+    py-12 sm:py-16 lg:py-0
+    overflow-x-hidden bg-slate-900
+  "
+>
   {/* BACKGROUND IMAGE */}
   <div className="absolute inset-0 z-0">
     <img
@@ -60,25 +67,26 @@ export const HomePage: React.FC = () => {
           №1 в Казахстане по LED технологиям
         </span>
 
-        <h1 className="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6">
-          Яркие решения для вашего <span className="text-blue-500">Бизнеса</span>
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6">
+          Инженерия визуальных решений для вашего{" "}
+          <span className="text-blue-500">Бизнеса</span>
         </h1>
 
-        <p className="text-xl text-slate-300 mb-10 leading-relaxed max-w-lg">
+        <p className="text-base sm:text-xl text-slate-300 mb-8 sm:mb-10 leading-relaxed max-w-lg">
           Проектируем, поставляем и устанавливаем LED-экраны любой сложности с гарантией 3 года.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-4 pb-2">
           <Link
             to="/catalog"
-            className="bg-blue-600 text-white px-10 py-5 rounded-2xl text-lg font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-blue-600/30 active:scale-95"
+            className="bg-blue-600 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-2xl text-base sm:text-lg font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-blue-600/30 active:scale-95"
           >
             Смотреть каталог <ArrowRight size={20} />
           </Link>
 
           <button
             onClick={scrollToLeads}
-            className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-2xl text-lg font-black uppercase tracking-widest hover:bg-white/20 transition-all flex items-center justify-center active:scale-95"
+            className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 sm:px-10 py-4 sm:py-5 rounded-2xl text-base sm:text-lg font-black uppercase tracking-widest hover:bg-white/20 transition-all flex items-center justify-center active:scale-95"
           >
             Получить расчет
           </button>
@@ -87,7 +95,6 @@ export const HomePage: React.FC = () => {
     </div>
   </div>
 </section>
-
           
 
       {/* Connection Error Message */}

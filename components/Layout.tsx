@@ -77,7 +77,7 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-1">
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold">L</div>
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold">AL</div>
               <span className="text-xl font-bold tracking-tight">ARDI LED</span>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed">

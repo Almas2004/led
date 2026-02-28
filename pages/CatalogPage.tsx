@@ -52,6 +52,13 @@ export const CatalogPage: React.FC = () => {
     setSelectedPurposes(prev => prev.includes(purpose) ? prev.filter(p => p !== purpose) : [...prev, purpose]);
   };
 
+  const pitchesByType: Record<ScreenType, string[]> = {
+    [ScreenType.INDOOR]: ['4.0', '3.0', '2.5', '2.0', '1.8', '1.2'],   // indoor
+    [ScreenType.OUTDOOR]: ['10', '8.0', '5.0', '4.0', '3.0', '2.5'],   // outdoor
+  };
+
+  const availablePitches = pitchesByType[typeFilter] ?? [];
+
   return (
     <div className="pt-28 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
@@ -94,13 +101,24 @@ export const CatalogPage: React.FC = () => {
             <div className="space-y-10">
               {/* Pitch Filter */}
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Шаг пикселя (P)</label>
+                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
+                  Шаг пикселя (P)
+                </label>
+
                 <div className="grid grid-cols-3 gap-2">
-                  {['1.2', '1.5', '1.8', '2.0', '2.5', '3.0', '4.0', '5.0', '6.0', '8.0', '10'].map(p => (
-                    <button 
+                  {availablePitches.map(p => (
+                    <button
                       key={p}
-                      onClick={() => setSelectedPitches(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p])}
-                      className={`px-2 py-2.5 text-[10px] font-black border rounded-xl transition-all ${selectedPitches.includes(p) ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white border-gray-200 text-slate-500 hover:border-blue-400'}`}
+                      onClick={() =>
+                        setSelectedPitches(prev =>
+                          prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]
+                        )
+                      }
+                      className={`px-2 py-2.5 text-[10px] font-black border rounded-xl transition-all ${
+                        selectedPitches.includes(p)
+                          ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-600/20'
+                          : 'bg-white border-gray-200 text-slate-500 hover:border-blue-400'
+                      }`}
                     >
                       P{p}
                     </button>
@@ -112,7 +130,7 @@ export const CatalogPage: React.FC = () => {
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Сфера применения</label>
                 <div className="space-y-3">
-                  {['Реклама', 'Образования', 'Сцена', 'Спорт', 'Конференц залы', 'Теле-студий'].map(p => (
+                  {['Реклама', 'Образование', 'Сцена', 'Спорт', 'Конференц залы', 'Теле-студий'].map(p => (
                     <label key={p} className="flex items-center gap-3 cursor-pointer group">
                       <input 
                         type="checkbox" 
