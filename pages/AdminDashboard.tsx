@@ -109,7 +109,7 @@ export const AdminDashboard: React.FC = () => {
     if (activeTab === 'products') {
       newItem = { ...newItem, name: '', type: ScreenType.INDOOR, pixelPitch: '2.5', priceFrom: 0, purpose: [], ipRating: 'IP20', refreshRate: 1920, brightness: 800, shortDescription: '', fullDescription: '', warranty: 3, leadTime: 15, viewingDistanceMin: 2, viewingDistanceMax: 10 };
     } else if (activeTab === 'solutions') {
-      newItem = { ...newItem, name: '', type: ScreenType.INDOOR, width: 2, height: 1, area: 2, priceFrom: 0, included: ['Экран', 'Монтаж', 'Настройка'], shortDescription: '', fullDescription: '' };
+      newItem = { ...newItem, name: '', type: ScreenType.INDOOR, width: 2, height: 1, area: 2, priceFrom: 0, included: ['Экран', 'Настройка', 'Пусконаладка'], shortDescription: '', fullDescription: '' };
     } else if (activeTab === 'cases') {
       newItem = { ...newItem, title: '', city: 'Алматы', industry: 'Реклама', task: '', solutionDesc: '', specs: [], duration: 5, result: '', shortDescription: '' };
     }

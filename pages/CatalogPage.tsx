@@ -3,6 +3,7 @@ import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 // Fixed: Added AlertTriangle and Image as ImageIcon to lucide-react imports
 import { Filter, SlidersHorizontal, ChevronRight, Info, Search, AlertTriangle, Image as ImageIcon } from 'lucide-react';
 import { api } from '../services/api';
+import { Reveal } from '../components/Reveal';
 import { Product, ScreenType } from '../types';
 
 export const CatalogPage: React.FC = () => {
@@ -192,7 +193,8 @@ export const CatalogPage: React.FC = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              {filteredProducts.map(p => (
+              {filteredProducts.map((p, index) => (
+                <Reveal key={p.id} delay={index * 70} className="hover-lift">
                 <div 
                   key={p.id} 
                   onClick={() => navigate(`/catalog/${p.slug}`)}
@@ -247,6 +249,7 @@ export const CatalogPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
+                </Reveal>
               ))}
             </div>
           )}

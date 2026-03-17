@@ -44,6 +44,8 @@ export interface Solution {
   brightness: number;
   included: string[];
   priceFrom: number;
+  shortDescription: string;
+  fullDescription: string;
   warranty: number;
   leadTime: number;
   images: string[];

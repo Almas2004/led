@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { api } from '../services/api';
 import { Case } from '../types';
 import { LeadForm } from '../components/LeadForm';
-import { MapPin, ArrowRight } from 'lucide-react';
+import { Reveal } from '../components/Reveal';
+import { MapPin, ArrowRight, Image as ImageIcon } from 'lucide-react';
 import { Link } from "react-router-dom";
 
 export const CasesPage: React.FC = () => {
@@ -28,10 +29,10 @@ export const CasesPage: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {cases.map(c => (
-              <div key={c.id} className="group relative bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500">
+            {cases.map((c, index) => (
+              <Reveal key={c.id} delay={index * 90} className="hover-lift group relative bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500">
                 <div className="h-80 relative overflow-hidden">
-                  <img src={c.images[0]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={c.title} />
+                  {c.images?.[0] ? <img src={c.images[0]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={c.title} /> : <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300"><ImageIcon size={48} /></div>}
                   <div className="absolute top-6 left-6 flex gap-2">
                     <span className="bg-white/90 backdrop-blur px-4 py-1.5 rounded-full text-xs font-bold text-slate-900 flex items-center gap-1 shadow-sm">
                       <MapPin size={12} className="text-blue-600" /> {c.city}
@@ -59,14 +60,14 @@ export const CasesPage: React.FC = () => {
 
                   </div>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         )}
 
-        <div className="mt-20">
+        <Reveal className="mt-20">
           <LeadForm title="Обсудить ваш проект" source="cases_bottom" buttonText="Оставить заявку" />
-        </div>
+        </Reveal>
       </div>
     </div>
   );

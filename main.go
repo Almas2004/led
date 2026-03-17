@@ -38,20 +38,22 @@ type Product struct {
 }
 
 type Solution struct {
-	ID            uint           `gorm:"primaryKey" json:"id"`
-	Slug          string         `gorm:"uniqueIndex" json:"slug"`
-	Name          string         `json:"name"`
-	Type          string         `json:"type"`
-	Width         float64        `json:"width"`
-	Height        float64        `json:"height"`
-	Area          float64        `json:"area"`
-	PixelPitch    string         `json:"pixelPitch"`
-	Brightness    int            `json:"brightness"`
-	Included      pq.StringArray `gorm:"type:text[]" json:"included"`
-	PriceFrom     float64        `json:"priceFrom"`
-	Images        pq.StringArray `gorm:"type:text[]" json:"images"`
-	IsFeatured    bool           `json:"isFeatured"`
-	FeaturedOrder int            `json:"featuredOrder"`
+	ID               uint           `gorm:"primaryKey" json:"id"`
+	Slug             string         `gorm:"uniqueIndex" json:"slug"`
+	Name             string         `json:"name"`
+	Type             string         `json:"type"`
+	Width            float64        `json:"width"`
+	Height           float64        `json:"height"`
+	Area             float64        `json:"area"`
+	PixelPitch       string         `json:"pixelPitch"`
+	Brightness       int            `json:"brightness"`
+	Included         pq.StringArray `gorm:"type:text[]" json:"included"`
+	PriceFrom        float64        `json:"priceFrom"`
+	ShortDescription string         `json:"shortDescription"`
+	FullDescription  string         `json:"fullDescription"`
+	Images           pq.StringArray `gorm:"type:text[]" json:"images"`
+	IsFeatured       bool           `json:"isFeatured"`
+	FeaturedOrder    int            `json:"featuredOrder"`
 }
 
 type Case struct {
@@ -83,8 +85,29 @@ type Lead struct {
 	ManagerNote string `json:"managerNote"`
 }
 
-
 var db *gorm.DB
+
+func ensureStringArray(value pq.StringArray) pq.StringArray {
+	if value == nil {
+		return pq.StringArray{}
+	}
+	return value
+}
+
+func normalizeProduct(product *Product) {
+	product.Purpose = ensureStringArray(product.Purpose)
+	product.Images = ensureStringArray(product.Images)
+}
+
+func normalizeSolution(item *Solution) {
+	item.Included = ensureStringArray(item.Included)
+	item.Images = ensureStringArray(item.Images)
+}
+
+func normalizeCase(item *Case) {
+	item.Specs = ensureStringArray(item.Specs)
+	item.Images = ensureStringArray(item.Images)
+}
 
 func initDB() {
 	// Настройки подключения к PostgreSQL (замените на свои)
@@ -153,14 +176,15 @@ func main() {
 		c.File("./dist/index.html")
 	})
 
-	
-
 	apiGroup := r.Group("/api")
 	{
 		// Products
 		apiGroup.GET("/products", func(c *gin.Context) {
 			var products []Product
 			db.Find(&products)
+			for i := range products {
+				normalizeProduct(&products[i])
+			}
 			c.JSON(200, products)
 		})
 		apiGroup.GET("/products/:slug", func(c *gin.Context) {
@@ -169,6 +193,7 @@ func main() {
 				c.JSON(404, gin.H{"error": "Product not found"})
 				return
 			}
+			normalizeProduct(&product)
 			c.JSON(200, product)
 		})
 		apiGroup.POST("/products", func(c *gin.Context) {
@@ -177,6 +202,7 @@ func main() {
 				c.JSON(400, gin.H{"error": err.Error()})
 				return
 			}
+			normalizeProduct(&product)
 			db.Save(&product)
 			c.JSON(201, product)
 		})
@@ -189,6 +215,9 @@ func main() {
 		apiGroup.GET("/solutions", func(c *gin.Context) {
 			var items []Solution
 			db.Find(&items)
+			for i := range items {
+				normalizeSolution(&items[i])
+			}
 			c.JSON(200, items)
 		})
 		apiGroup.POST("/solutions", func(c *gin.Context) {
@@ -197,6 +226,7 @@ func main() {
 				c.JSON(400, gin.H{"error": err.Error()})
 				return
 			}
+			normalizeSolution(&item)
 			db.Save(&item)
 			c.JSON(201, item)
 		})
@@ -209,6 +239,9 @@ func main() {
 		apiGroup.GET("/cases", func(c *gin.Context) {
 			var items []Case
 			db.Find(&items)
+			for i := range items {
+				normalizeCase(&items[i])
+			}
 			c.JSON(200, items)
 		})
 		apiGroup.POST("/cases", func(c *gin.Context) {
@@ -217,6 +250,7 @@ func main() {
 				c.JSON(400, gin.H{"error": err.Error()})
 				return
 			}
+			normalizeCase(&item)
 			db.Save(&item)
 			c.JSON(201, item)
 		})
@@ -258,6 +292,7 @@ func main() {
 	if port == "" {
 		port = "8082"
 	}
-	r.Run(":" + port)
-	r.Run(":" + port)
+	if err := r.Run(":" + port); err != nil {
+		log.Fatal(err)
+	}
 }
