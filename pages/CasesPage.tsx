@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Clock3, Image as ImageIcon, MapPin, Play, Quote, Sparkles } from 'lucide-react';
+import { ArrowRight, Image as ImageIcon, Play, Quote } from 'lucide-react';
 import { api } from '../services/api';
 import { Case } from '../types';
 import { LeadForm } from '../components/LeadForm';
 import { Reveal } from '../components/Reveal';
 
-const cardHeights = ['h-72', 'h-[28rem]', 'h-80', 'h-[32rem]'] as const;
+const cardHeights = ['h-[24rem]', 'h-[30rem]', 'h-[26rem]', 'h-[34rem]'] as const;
 
 const getCardHeight = (index: number, imageCount: number): string => {
   if (imageCount > 1) {
     return cardHeights[index % cardHeights.length];
   }
 
-  return index % 2 === 0 ? 'h-80' : 'h-[26rem]';
+  return index % 2 === 0 ? 'h-[28rem]' : 'h-[24rem]';
 };
 
 export const CasesPage: React.FC = () => {
@@ -24,33 +24,27 @@ export const CasesPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="pt-28 pb-20 bg-white">
-      <section className="pb-14">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Reveal className="max-w-4xl">
-            <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-blue-600">
-              <Sparkles size={14} />
-              Реальные проекты
-            </span>
-            <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950">
-              Кейсы в формате живой доски, как у Pinterest
-            </h1>
-            <p className="mt-6 max-w-3xl text-base sm:text-xl leading-8 text-slate-500">
-              Здесь собраны проекты, где можно быстро почувствовать масштаб, посмотреть детали монтажа и понять,
-              как LED-решения выглядят в реальной среде: от торговых залов и витрин до фасадов и сценических инсталляций.
+    <div className="bg-white pb-20 pt-28">
+      <section className="pb-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal className="max-w-3xl">
+            <h1 className="text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">Кейсы</h1>
+            <p className="mt-5 text-base leading-8 text-slate-500 sm:text-lg">
+              Подборка реализованных проектов с крупными визуалами, деталями монтажа и тем, как экраны живут в реальном
+              пространстве.
             </p>
           </Reveal>
         </div>
       </section>
 
       <section>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {cases.length === 0 ? (
             <Reveal className="rounded-[2rem] border-2 border-dashed border-slate-200 bg-slate-50 px-6 py-20 text-center">
               <p className="text-lg font-bold text-slate-500">Портфолио наполняется. Скоро здесь появятся новые проекты.</p>
             </Reveal>
           ) : (
-            <div className="columns-1 md:columns-2 xl:columns-3 gap-6 [column-fill:_balance]">
+            <div className="columns-1 gap-6 md:columns-2 xl:columns-3 [column-fill:_balance]">
               {cases.map((c, index) => {
                 const previewImage = c.images?.[0];
                 const secondaryImage = c.images?.[1];
@@ -60,7 +54,7 @@ export const CasesPage: React.FC = () => {
                   <Reveal
                     key={c.id}
                     delay={index * 70}
-                    className="mb-6 break-inside-avoid overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)] transition-transform duration-300 hover:-translate-y-1"
+                    className="mb-6 break-inside-avoid overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.10)] transition-transform duration-300 hover:-translate-y-1"
                   >
                     <article className="overflow-hidden">
                       <div className={`relative ${cardHeight} overflow-hidden bg-slate-100`}>
@@ -76,57 +70,23 @@ export const CasesPage: React.FC = () => {
                           </div>
                         )}
 
-                        <div className="absolute inset-x-0 top-0 flex flex-wrap gap-2 p-4">
-                          <span className="inline-flex items-center gap-1 rounded-full bg-white/92 px-3 py-1.5 text-xs font-bold text-slate-900 shadow-sm backdrop-blur">
-                            <MapPin size={12} className="text-blue-600" />
-                            {c.city}
-                          </span>
-                          <span className="rounded-full bg-slate-950/88 px-3 py-1.5 text-xs font-bold text-white backdrop-blur">
-                            {c.industry}
-                          </span>
-                        </div>
-
-                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent p-5 text-white">
-                          <h2 className="text-2xl font-black leading-tight sm:text-[2rem]">{c.title}</h2>
-                          <p className="mt-2 max-w-xl text-sm leading-6 text-white/82">{c.result || c.task}</p>
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent p-5 text-white sm:p-6">
+                          <h2 className="text-2xl font-black leading-tight sm:text-3xl">{c.title}</h2>
                         </div>
                       </div>
 
                       <div className="space-y-5 p-5 sm:p-6">
-                        <div className="flex flex-wrap gap-2 text-xs font-bold text-slate-500">
-                          {c.specs?.slice(0, 3).map((spec) => (
-                            <span key={spec} className="rounded-full bg-slate-100 px-3 py-1.5">
-                              {spec}
-                            </span>
-                          ))}
-                          {c.duration > 0 && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1.5 text-blue-700">
-                              <Clock3 size={12} />
-                              {c.duration} дн.
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="space-y-3">
-                          <div>
-                            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-400">Задача</p>
-                            <p className="mt-1 text-sm leading-6 text-slate-600">{c.task}</p>
-                          </div>
-                          <div>
-                            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-400">Решение</p>
-                            <p className="mt-1 text-sm leading-6 text-slate-950">{c.solution}</p>
-                          </div>
-                        </div>
+                        <p className="text-sm leading-7 text-slate-600">{c.result || c.solution || c.task}</p>
 
                         {secondaryImage && (
-                          <div className="overflow-hidden rounded-2xl bg-slate-100">
-                            <img src={secondaryImage} alt={`${c.title} - деталь проекта`} className="h-44 w-full object-cover" />
+                          <div className="overflow-hidden rounded-[1.5rem] bg-slate-100">
+                            <img src={secondaryImage} alt={c.title} className="h-48 w-full object-cover" />
                           </div>
                         )}
 
                         {c.testimonial && (
-                          <div className="rounded-2xl bg-slate-50 p-4">
-                            <div className="mb-2 flex items-center gap-2 text-slate-400">
+                          <div className="rounded-[1.5rem] bg-slate-50 p-4 sm:p-5">
+                            <div className="mb-3 flex items-center gap-2 text-slate-400">
                               <Quote size={16} />
                               <span className="text-[11px] font-black uppercase tracking-[0.18em]">Отзыв</span>
                             </div>
@@ -137,9 +97,9 @@ export const CasesPage: React.FC = () => {
                         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
                           <Link
                             to="/contacts"
-                            className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-3 text-sm font-black text-white transition-colors hover:bg-blue-700"
+                            className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-sm font-black text-white transition-colors hover:bg-blue-600"
                           >
-                            Обсудить похожий проект
+                            Хочу похожий проект
                             <ArrowRight size={16} />
                           </Link>
 
@@ -151,10 +111,10 @@ export const CasesPage: React.FC = () => {
                               className="inline-flex items-center gap-2 text-sm font-bold text-slate-700 transition-colors hover:text-blue-600"
                             >
                               <Play size={16} />
-                              Смотреть видео
+                              Видео
                             </a>
                           ) : (
-                            <span className="text-sm font-bold text-slate-400">Монтаж и запуск под ключ</span>
+                            <span className="text-sm font-bold text-slate-400">Под ключ</span>
                           )}
                         </div>
                       </div>
@@ -168,7 +128,7 @@ export const CasesPage: React.FC = () => {
       </section>
 
       <section className="mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
             <LeadForm title="Обсудить ваш проект" source="cases_bottom" buttonText="Оставить заявку" />
           </Reveal>

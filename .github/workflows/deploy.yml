@@ -113,20 +113,17 @@ jobs:
               sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
               sudo usermod -aG docker ${{ secrets.SERVER_USER }}
             fi
-            if [ ! -f .env ]; then
-              touch .env
-            fi
-            grep -v '^DATABASE_URL=' .env | grep -v '^ADMIN_USERNAME=' .env | grep -v '^ADMIN_PASSWORD=' .env | grep -v '^TELEGRAM_BOT_TOKEN=' .env | grep -v '^TELEGRAM_CHAT_ID=' .env | grep -v '^IMAGE_NAME=' .env | grep -v '^APP_PORT=' .env > .env.tmp || true
-            mv .env.tmp .env
-            echo "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/ledvision:latest" >> .env
-            echo "APP_PORT=8082" >> .env
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-            echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> .env
-            echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
-            echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
-            echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> .env
+            cat > .env <<EOF
+            IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/ledvision:latest
+            APP_PORT=8082
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}
+            ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+            TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
+            TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}
+            EOF
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
             sudo docker compose pull
-            sudo docker compose up -d --remove-orphans
+            sudo docker compose up -d --force-recreate --remove-orphans
             sudo docker image prune -f
             sudo docker ps
