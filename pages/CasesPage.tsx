@@ -16,6 +16,49 @@ const getCardHeight = (index: number, imageCount: number): string => {
   return index % 2 === 0 ? 'h-[28rem]' : 'h-[24rem]';
 };
 
+const CaseImage: React.FC<{
+  src?: string;
+  alt: string;
+  className: string;
+  eager?: boolean;
+}> = ({ src, alt, className, eager = false }) => {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(false);
+  }, [src]);
+
+  if (!src) {
+    return (
+      <div className="flex h-full w-full items-center justify-center text-slate-300">
+        <ImageIcon size={52} />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div
+        className={`absolute inset-0 bg-slate-200 transition-opacity duration-500 ${
+          loaded ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
+        <div className="h-full w-full animate-pulse bg-gradient-to-br from-slate-200 via-slate-100 to-slate-200" />
+      </div>
+      <img
+        src={src}
+        alt={alt}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchPriority={eager ? 'high' : 'auto'}
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        onError={() => setLoaded(true)}
+        className={`${className} transition-all duration-700 ${loaded ? 'scale-100 opacity-100' : 'scale-[1.02] opacity-0'}`}
+      />
+    </>
+  );
+};
+
 export const CasesPage: React.FC = () => {
   const [cases, setCases] = useState<Case[]>([]);
 
@@ -49,6 +92,7 @@ export const CasesPage: React.FC = () => {
                 const previewImage = c.images?.[0];
                 const secondaryImage = c.images?.[1];
                 const cardHeight = getCardHeight(index, c.images?.length ?? 0);
+                const eagerImage = index < 3;
 
                 return (
                   <Reveal
@@ -58,17 +102,12 @@ export const CasesPage: React.FC = () => {
                   >
                     <article className="overflow-hidden">
                       <div className={`relative ${cardHeight} overflow-hidden bg-slate-100`}>
-                        {previewImage ? (
-                          <img
-                            src={previewImage}
-                            alt={c.title}
-                            className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                          />
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center text-slate-300">
-                            <ImageIcon size={52} />
-                          </div>
-                        )}
+                        <CaseImage
+                          src={previewImage}
+                          alt={c.title}
+                          eager={eagerImage}
+                          className="h-full w-full object-cover hover:scale-105"
+                        />
 
                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent p-5 text-white sm:p-6">
                           <h2 className="text-2xl font-black leading-tight sm:text-3xl">{c.title}</h2>
@@ -79,8 +118,8 @@ export const CasesPage: React.FC = () => {
                         <p className="text-sm leading-7 text-slate-600">{c.result || c.solution || c.task}</p>
 
                         {secondaryImage && (
-                          <div className="overflow-hidden rounded-[1.5rem] bg-slate-100">
-                            <img src={secondaryImage} alt={c.title} className="h-48 w-full object-cover" />
+                          <div className="relative overflow-hidden rounded-[1.5rem] bg-slate-100">
+                            <CaseImage src={secondaryImage} alt={c.title} className="h-48 w-full object-cover" />
                           </div>
                         )}
 
