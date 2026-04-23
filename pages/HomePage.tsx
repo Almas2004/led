@@ -15,7 +15,7 @@ export const HomePage: React.FC = () => {
     const loadData = async () => {
       try {
         const solutions = await api.getSolutions();
-        const cases = await api.getCases({ featured: true, limit: 4 });
+        const cases = await api.getCases({ full: true, featured: true, limit: 4 });
         setFeaturedSolutions(solutions.filter(s => s.isFeatured).slice(0, 4));
         setFeaturedCases(cases.slice(0, 4));
         setError(false);

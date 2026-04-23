@@ -63,7 +63,7 @@ export const CasesPage: React.FC = () => {
   const [cases, setCases] = useState<Case[]>([]);
 
   useEffect(() => {
-    api.getCases({ limit: 60, page: 1 }).then(setCases);
+    api.getCases({ full: true, limit: 60, page: 1 }).then(setCases);
   }, []);
 
   return (
