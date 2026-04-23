@@ -40,7 +40,7 @@ export const HomePage: React.FC = () => {
       <section className="relative flex items-center min-h-[85vh] h-auto py-12 sm:py-16 lg:py-0 overflow-x-hidden bg-slate-900">
         <div className="absolute inset-0 z-0">
           <img
-            src="/hero-led-panels.png"
+            src="hero-led-panels.png"
             alt="LED Background"
             className="w-full h-full object-cover opacity-40"
           />
