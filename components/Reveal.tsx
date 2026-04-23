@@ -30,11 +30,12 @@ export const Reveal: React.FC<RevealProps> = ({
   className = '',
   delay = 0,
   duration = 700,
-  variant = 'up',
+  variant,
   once = true,
 }) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const revealVariant: RevealVariant = variant ?? 'up';
 
   useEffect(() => {
     const node = ref.current;
@@ -65,7 +66,7 @@ export const Reveal: React.FC<RevealProps> = ({
       className={className}
       style={{
         opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translate3d(0, 0, 0) scale(1)' : getHiddenTransform(variant),
+        transform: isVisible ? 'translate3d(0, 0, 0) scale(1)' : getHiddenTransform(revealVariant),
         transition: `opacity ${duration}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform ${duration}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
         willChange: 'opacity, transform',
       }}
