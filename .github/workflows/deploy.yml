@@ -113,9 +113,23 @@ jobs:
               sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
               sudo usermod -aG docker ${{ secrets.SERVER_USER }}
             fi
-            printf '%s\n' "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/ledvision:latest" "APP_PORT=8082" "DATABASE_URL=${{ secrets.DATABASE_URL }}" "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" > .env
-            echo "${{ secrets.DOCKERHUB_TOKEN }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-            sudo docker compose pull
+            DATABASE_URL_VALUE='${{ secrets.DATABASE_URL }}'
+            DATABASE_URL_VALUE="${DATABASE_URL_VALUE//$'\r'/}"
+            DATABASE_URL_VALUE="${DATABASE_URL_VALUE//$'\n'/}"
+            ADMIN_USERNAME_VALUE='${{ secrets.ADMIN_USERNAME }}'
+            ADMIN_USERNAME_VALUE="${ADMIN_USERNAME_VALUE//$'\r'/}"
+            ADMIN_USERNAME_VALUE="${ADMIN_USERNAME_VALUE//$'\n'/}"
+            ADMIN_PASSWORD_VALUE='${{ secrets.ADMIN_PASSWORD }}'
+            ADMIN_PASSWORD_VALUE="${ADMIN_PASSWORD_VALUE//$'\r'/}"
+            ADMIN_PASSWORD_VALUE="${ADMIN_PASSWORD_VALUE//$'\n'/}"
+            TELEGRAM_BOT_TOKEN_VALUE='${{ secrets.TELEGRAM_BOT_TOKEN }}'
+            TELEGRAM_BOT_TOKEN_VALUE="${TELEGRAM_BOT_TOKEN_VALUE//$'\r'/}"
+            TELEGRAM_BOT_TOKEN_VALUE="${TELEGRAM_BOT_TOKEN_VALUE//$'\n'/}"
+            TELEGRAM_CHAT_ID_VALUE='${{ secrets.TELEGRAM_CHAT_ID }}'
+            TELEGRAM_CHAT_ID_VALUE="${TELEGRAM_CHAT_ID_VALUE//$'\r'/}"
+            TELEGRAM_CHAT_ID_VALUE="${TELEGRAM_CHAT_ID_VALUE//$'\n'/}"
+            printf '%s\n' "IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/ledvision:latest" "APP_PORT=8082" "DATABASE_URL=${DATABASE_URL_VALUE}" "ADMIN_USERNAME=${ADMIN_USERNAME_VALUE}" "ADMIN_PASSWORD=${ADMIN_PASSWORD_VALUE}" "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN_VALUE}" "TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID_VALUE}" > .env
+            sudo docker compose pull || sudo docker compose pull
             sudo docker compose up -d --force-recreate --remove-orphans
             sudo docker image prune -f
             sudo docker ps
