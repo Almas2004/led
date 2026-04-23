@@ -11,6 +11,7 @@ interface LeadFormProps {
   solutionId?: string;
   buttonText?: string;
   id?: string;
+  className?: string;
 }
 
 export const LeadForm: React.FC<LeadFormProps> = ({ 
@@ -19,7 +20,8 @@ export const LeadForm: React.FC<LeadFormProps> = ({
   productId,
   solutionId,
   buttonText = "Отправить запрос",
-  id
+  id,
+  className = ''
 }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -57,11 +59,11 @@ export const LeadForm: React.FC<LeadFormProps> = ({
 
   if (isSuccess) {
     return (
-      <div id={id} className="bg-white p-8 rounded-2xl border-2 border-green-100 shadow-xl text-center">
+      <div id={id} className={`w-full min-w-0 max-w-full bg-white p-5 sm:p-8 rounded-2xl border-2 border-green-100 shadow-xl text-center ${className}`}>
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <CheckCircle className="text-green-600" size={32} />
         </div>
-        <h3 className="text-2xl font-bold !text-slate-900 mb-2">Спасибо!</h3>
+        <h3 className="text-xl sm:text-2xl font-bold !text-slate-900 mb-2 break-words">Спасибо!</h3>
         <p className="text-slate-600 mb-6">Ваша заявка принята. Менеджер свяжется с вами в течение 15 минут.</p>
         <button 
           onClick={() => setIsSuccess(false)}
@@ -74,28 +76,28 @@ export const LeadForm: React.FC<LeadFormProps> = ({
   }
 
   return (
-    <div id={id} className="bg-white p-8 rounded-2xl border border-gray-100 shadow-xl">
-      <h3 className="text-2xl font-bold !text-slate-900 mb-6">{title}</h3>
+    <div id={id} className={`w-full min-w-0 max-w-full bg-white p-5 sm:p-8 rounded-2xl border border-gray-100 shadow-xl ${className}`}>
+      <h3 className="text-xl sm:text-2xl font-bold !text-slate-900 mb-5 sm:mb-6 leading-tight break-words">{title}</h3>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
+          <div className="min-w-0">
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Имя</label>
             <input
               required
               type="text"
               placeholder="Иван Иванов"
-              className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 !text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
+              className="w-full min-w-0 px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 !text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
               value={formData.name}
               onChange={e => setFormData({...formData, name: e.target.value})}
             />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Телефон</label>
             <input
               required
               type="tel"
               placeholder="+7 (7__) ___-__-__"
-              className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 !text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
+              className="w-full min-w-0 px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 !text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
               value={formData.phone}
               onChange={e => setFormData({...formData, phone: e.target.value})}
             />
@@ -107,7 +109,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({
             required
             type="text"
             placeholder="Алматы, Астана..."
-            className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 !text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
+            className="w-full min-w-0 px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 !text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
             value={formData.city}
             onChange={e => setFormData({...formData, city: e.target.value})}
           />
@@ -117,7 +119,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({
           <textarea
             rows={3}
             placeholder="Размер экрана, место установки..."
-            className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 !text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
+            className="w-full min-w-0 px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 !text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
             value={formData.message}
             onChange={e => setFormData({...formData, message: e.target.value})}
           />

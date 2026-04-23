@@ -1,7 +1,6 @@
-
 import React from 'react';
-import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { Header, Footer } from './components/Layout';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { Footer, Header } from './components/Layout';
 import { HomePage } from './pages/HomePage';
 import { CatalogPage } from './pages/CatalogPage';
 import { ProductDetailsPage } from './pages/ProductDetailsPage';
@@ -17,9 +16,7 @@ const LayoutWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   return (
     <>
       {!isAdmin && <Header />}
-      <main className="min-h-screen">
-        {children}
-      </main>
+      <main className="min-h-screen">{children}</main>
       {!isAdmin && <Footer />}
     </>
   );

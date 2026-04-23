@@ -131,21 +131,21 @@ export const SolutionsPage: React.FC = () => {
           </div>
         )}
 
-        <Reveal className="mt-24 bg-slate-900 rounded-3xl p-12 text-white relative overflow-hidden">
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-black mb-6">Не нашли подходящее решение?</h2>
-              <p className="text-slate-400 mb-8 leading-relaxed">
+        <Reveal className="mt-16 sm:mt-24 bg-slate-900 rounded-2xl sm:rounded-3xl p-5 sm:p-8 lg:p-12 text-white relative overflow-hidden">
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-w-0">
+            <div className="min-w-0 text-center sm:text-left">
+              <h2 className="text-2xl sm:text-3xl font-black mb-5 sm:mb-6 leading-tight break-words">Не нашли подходящее решение?</h2>
+              <p className="text-sm sm:text-base text-slate-400 mb-7 sm:mb-8 leading-relaxed">
                 Мы разработаем индивидуальный проект под ваши требования и бюджет в течение 24 часов.
                 Учтем особенности помещения, освещенность и задачи контента.
               </p>
-              <div className="flex items-center gap-6">
-                <div className="flex -space-x-3">
+              <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-4 sm:gap-6">
+                <div className="flex -space-x-3 shrink-0">
                   <img className="w-12 h-12 rounded-full border-4 border-slate-900" src="https://i.pravatar.cc/150?u=1" alt="" />
                   <img className="w-12 h-12 rounded-full border-4 border-slate-900" src="https://i.pravatar.cc/150?u=2" alt="" />
                   <img className="w-12 h-12 rounded-full border-4 border-slate-900" src="https://i.pravatar.cc/150?u=3" alt="" />
                 </div>
-                <p className="text-sm font-bold text-slate-300">Наши инженеры уже в сети</p>
+                <p className="text-sm font-bold text-slate-300 leading-snug max-w-56">Наши инженеры уже в сети</p>
               </div>
             </div>
             <LeadForm title="Индивидуальный расчет" source="solutions_custom" />
