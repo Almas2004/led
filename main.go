@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"compress/gzip"
 	"context"
 	"database/sql/driver"
 	"encoding/json"
@@ -170,6 +171,17 @@ type app struct {
 	adminPass  string
 }
 
+type caseListItem struct {
+	ID          ID             `json:"id"`
+	Slug        string         `json:"slug"`
+	Title       string         `json:"title"`
+	Result      string         `json:"result"`
+	Images      pq.StringArray `json:"images"`
+	VideoURL    string         `json:"videoUrl,omitempty"`
+	Testimonial string         `json:"testimonial,omitempty"`
+	IsFeatured  bool           `json:"isFeatured"`
+}
+
 func main() {
 	_ = godotenv.Load(".env", ".env.local")
 
@@ -275,7 +287,7 @@ func migrate(db *gorm.DB) error {
 
 func (a *app) router() *gin.Engine {
 	r := gin.New()
-	r.Use(gin.Recovery(), requestLogger(), cors())
+	r.Use(gin.Recovery(), gzipMiddleware(), requestLogger(), cors())
 
 	api := r.Group("/api")
 	{
@@ -321,6 +333,47 @@ func cors() gin.HandlerFunc {
 			return
 		}
 
+		c.Next()
+	}
+}
+
+type gzipWriter struct {
+	gin.ResponseWriter
+	writer *gzip.Writer
+}
+
+func (g *gzipWriter) Write(data []byte) (int, error) {
+	return g.writer.Write(data)
+}
+
+func (g *gzipWriter) WriteString(s string) (int, error) {
+	return g.writer.Write([]byte(s))
+}
+
+func gzipMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if !strings.Contains(c.GetHeader("Accept-Encoding"), "gzip") {
+			c.Next()
+			return
+		}
+
+		if strings.HasSuffix(c.Request.URL.Path, ".png") ||
+			strings.HasSuffix(c.Request.URL.Path, ".jpg") ||
+			strings.HasSuffix(c.Request.URL.Path, ".jpeg") ||
+			strings.HasSuffix(c.Request.URL.Path, ".webp") ||
+			strings.HasSuffix(c.Request.URL.Path, ".gif") ||
+			strings.HasSuffix(c.Request.URL.Path, ".woff") ||
+			strings.HasSuffix(c.Request.URL.Path, ".woff2") {
+			c.Next()
+			return
+		}
+
+		gz := gzip.NewWriter(c.Writer)
+		defer gz.Close()
+
+		c.Header("Content-Encoding", "gzip")
+		c.Header("Vary", "Accept-Encoding")
+		c.Writer = &gzipWriter{ResponseWriter: c.Writer, writer: gz}
 		c.Next()
 	}
 }
@@ -528,14 +581,65 @@ func (a *app) deleteSolution(c *gin.Context) {
 }
 
 func (a *app) listCases(c *gin.Context) {
-	var items []Case
-	if err := a.db.Order("featured_order asc, id desc").Find(&items).Error; err != nil {
+	page := envIntFromQuery(c, "page", 1)
+	limit := envIntFromQuery(c, "limit", 24)
+	if limit < 1 {
+		limit = 24
+	}
+	if limit > 100 {
+		limit = 100
+	}
+
+	query := a.db.Model(&Case{})
+	if c.Query("featured") == "1" || strings.EqualFold(c.Query("featured"), "true") {
+		query = query.Where("is_featured = ?", true)
+	}
+
+	if c.Query("full") == "1" {
+		var items []Case
+		if err := query.Order("featured_order asc, id desc").Limit(limit).Offset((page - 1) * limit).Find(&items).Error; err != nil {
+			respondDBError(c, err)
+			return
+		}
+		for i := range items {
+			normalizeCase(&items[i])
+		}
+		c.JSON(http.StatusOK, items)
+		return
+	}
+
+	var items []caseListItem
+	if err := query.
+		Select(`
+			id,
+			slug,
+			title,
+			result,
+			video_url,
+			testimonial,
+			is_featured,
+			CASE
+				WHEN COALESCE(array_length(images, 1), 0) > 0 THEN ARRAY[images[1]]
+				ELSE ARRAY[]::text[]
+			END AS images
+		`).
+		Order("featured_order asc, id desc").
+		Limit(limit).
+		Offset((page - 1) * limit).
+		Find(&items).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
+
 	for i := range items {
-		normalizeCase(&items[i])
+		items[i].Slug = cleanText(items[i].Slug)
+		items[i].Title = cleanText(items[i].Title)
+		items[i].Result = cleanText(items[i].Result)
+		items[i].Images = ensureStringArray(items[i].Images)
+		items[i].VideoURL = cleanText(items[i].VideoURL)
+		items[i].Testimonial = cleanText(items[i].Testimonial)
 	}
+
 	c.JSON(http.StatusOK, items)
 }
 
@@ -851,6 +955,20 @@ func env(key, fallback string) string {
 
 func envInt(key string, fallback int) int {
 	value := strings.TrimSpace(os.Getenv(key))
+	if value == "" {
+		return fallback
+	}
+
+	parsed, err := strconv.Atoi(value)
+	if err != nil {
+		return fallback
+	}
+
+	return parsed
+}
+
+func envIntFromQuery(c *gin.Context, key string, fallback int) int {
+	value := strings.TrimSpace(c.Query(key))
 	if value == "" {
 		return fallback
 	}

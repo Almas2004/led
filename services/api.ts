@@ -130,6 +130,13 @@ const normalizeLead = (lead: Partial<Lead> | null | undefined): Lead => ({
   managerNote: lead?.managerNote,
 });
 
+type GetCasesOptions = {
+  full?: boolean;
+  featured?: boolean;
+  limit?: number;
+  page?: number;
+};
+
 export const api = {
   setAdminCredentials(username: string, password: string) {
     if (typeof window === 'undefined') {
@@ -223,8 +230,23 @@ export const api = {
     await handleResponse<void>(res);
   },
 
-  getCases: async (): Promise<Case[]> => {
-    const res = await safeFetch(`${API_BASE}/cases`);
+  getCases: async (options: GetCasesOptions = {}): Promise<Case[]> => {
+    const params = new URLSearchParams();
+    if (options.full) {
+      params.set('full', '1');
+    }
+    if (options.featured) {
+      params.set('featured', '1');
+    }
+    if (typeof options.limit === 'number') {
+      params.set('limit', String(options.limit));
+    }
+    if (typeof options.page === 'number') {
+      params.set('page', String(options.page));
+    }
+
+    const query = params.toString();
+    const res = await safeFetch(`${API_BASE}/cases${query ? `?${query}` : ''}`);
     const data = await handleResponse<unknown>(res);
     return ensureArray(data as Case[]).map(normalizeCase);
   },

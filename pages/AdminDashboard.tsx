@@ -90,7 +90,7 @@ export const AdminDashboard: React.FC = () => {
       } else if (activeTab === 'solutions') {
         setSolutions(await api.getSolutions());
       } else {
-        setCases(await api.getCases());
+        setCases(await api.getCases({ full: true, limit: 100 }));
       }
       setIsBackendOnline(true);
     } catch (err) {
