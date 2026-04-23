@@ -16,6 +16,14 @@ const getCardHeight = (index: number, imageCount: number): string => {
   return index % 2 === 0 ? 'h-[28rem]' : 'h-[24rem]';
 };
 
+const pickCaseImages = (images: string[] | undefined) => {
+  const validImages = (images ?? []).map((item) => item.trim()).filter(Boolean);
+  return {
+    previewImage: validImages[0],
+    secondaryImage: validImages[1],
+  };
+};
+
 const CaseImage: React.FC<{
   src?: string;
   alt: string;
@@ -89,8 +97,7 @@ export const CasesPage: React.FC = () => {
           ) : (
             <div className="columns-1 gap-6 md:columns-2 xl:columns-3 [column-fill:_balance]">
               {cases.map((c, index) => {
-                const previewImage = c.images?.[0];
-                const secondaryImage = c.images?.[1];
+                const { previewImage, secondaryImage } = pickCaseImages(c.images);
                 const cardHeight = getCardHeight(index, c.images?.length ?? 0);
                 const eagerImage = index < 3;
 
