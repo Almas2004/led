@@ -408,6 +408,18 @@ func (a *app) mountFrontend(r *gin.Engine) {
 		r.Static("/assets", assetsPath)
 	}
 
+	if entries, err := os.ReadDir(a.distDir); err == nil {
+		for _, entry := range entries {
+			if entry.IsDir() || entry.Name() == "index.html" {
+				continue
+			}
+
+			publicPath := "/" + entry.Name()
+			filePath := filepath.Join(a.distDir, entry.Name())
+			r.StaticFile(publicPath, filePath)
+		}
+	}
+
 	r.GET("/", func(c *gin.Context) {
 		a.serveIndex(c)
 	})
