@@ -1,96 +1,74 @@
 import React from 'react';
-import { Phone, Mail, MapPin, Clock, MessageCircle } from 'lucide-react';
+import { Clock, Mail, MessageCircle, Phone } from 'lucide-react';
 import { CONTACTS } from '../constants';
 import { LeadForm } from '../components/LeadForm';
 import { Reveal } from '../components/Reveal';
 
 export const ContactsPage: React.FC = () => {
   return (
-    <div className="pt-28 pb-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="pb-20 pt-28">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
-          <h1 className="text-4xl font-black text-slate-900 mb-4">Контакты</h1>
-          <p className="text-slate-500 mb-12 max-w-2xl">
-            Свяжитесь с нами любым удобным способом. Мы работаем по всему Казахстану и готовы проконсультировать вас по любому вопросу.
+          <h1 className="mb-4 text-4xl font-black text-slate-900">Контакты</h1>
+          <p className="mb-12 max-w-2xl text-slate-500">
+            Свяжитесь с нами удобным способом. Поможем с выбором экрана, конфигурацией проекта, сроками и расчетом под ваш объект.
           </p>
         </Reveal>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
           <div className="space-y-10">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              <Reveal className="hover-lift bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-4">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+              <Reveal className="hover-lift rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
                   <Phone size={24} />
                 </div>
-                <h4 className="font-bold mb-2">Телефон</h4>
-                <a href={`tel:${CONTACTS.phone}`} className="text-slate-600 hover:text-blue-600 transition-colors">
+                <h4 className="mb-2 font-bold">Телефон</h4>
+                <a href={`tel:+${CONTACTS.phoneHref}`} className="text-slate-600 transition-colors hover:text-blue-600">
                   {CONTACTS.phone}
                 </a>
               </Reveal>
 
-              <Reveal delay={80} className="hover-lift bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-green-600 mb-4">
+              <Reveal delay={80} className="hover-lift rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
                   <MessageCircle size={24} />
                 </div>
-                <h4 className="font-bold mb-2">WhatsApp</h4>
-                <a href={`https://wa.me/${CONTACTS.whatsapp}`} className="text-slate-600 hover:text-green-600 transition-colors">
-                  Написать в чат
+                <h4 className="mb-2 font-bold">WhatsApp</h4>
+                <a href={CONTACTS.whatsappUrl} target="_blank" rel="noreferrer" className="text-slate-600 transition-colors hover:text-green-600">
+                  Написать в WhatsApp
                 </a>
               </Reveal>
 
-              <Reveal delay={160} className="hover-lift bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-4">
+              <Reveal delay={160} className="hover-lift rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
                   <Mail size={24} />
                 </div>
-                <h4 className="font-bold mb-2">Email</h4>
-                <a href={`mailto:${CONTACTS.email}`} className="text-slate-600 hover:text-purple-600 transition-colors">
+                <h4 className="mb-2 font-bold">Email</h4>
+                <a href={`mailto:${CONTACTS.email}`} className="text-slate-600 transition-colors hover:text-purple-600">
                   {CONTACTS.email}
                 </a>
               </Reveal>
 
-              <Reveal delay={240} className="hover-lift bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600 mb-4">
+              <Reveal delay={240} className="hover-lift rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100 text-orange-600">
                   <Clock size={24} />
                 </div>
-                <h4 className="font-bold mb-2">Режим работы</h4>
-                <p className="text-slate-600 text-sm leading-relaxed">{CONTACTS.schedule}</p>
+                <h4 className="mb-2 font-bold">Режим работы</h4>
+                <p className="text-sm leading-relaxed text-slate-600">{CONTACTS.schedule}</p>
               </Reveal>
             </div>
 
-            <Reveal className="hover-lift bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center text-red-600 flex-shrink-0">
-                  <MapPin size={24} />
-                </div>
-                <div>
-                  <h4 className="font-bold mb-2">Адрес офиса</h4>
-                  <p className="text-slate-600">{CONTACTS.address}</p>
-                </div>
-              </div>
-            </Reveal>
-
-            <Reveal delay={120} className="rounded-2xl overflow-hidden h-80 border border-gray-200 shadow-inner">
-              <iframe
-                src={CONTACTS.map_iframe}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen={true}
-                loading="lazy"
-              ></iframe>
+            <Reveal className="rounded-2xl border border-blue-100 bg-blue-50 p-6">
+              <h5 className="mb-3 font-bold text-blue-900">Как мы помогаем</h5>
+              <ul className="space-y-2 text-sm text-blue-800">
+                <li>• Подбираем конфигурацию под вашу площадку и задачу</li>
+                <li>• Считаем сроки, бюджет и запуск без лишней переписки</li>
+                <li>• Сопровождаем проект после монтажа и старта работы</li>
+              </ul>
             </Reveal>
           </div>
 
           <Reveal variant="right">
-            <LeadForm title="Заказать замер или расчет" source="contacts_page" buttonText="Отправить заявку" />
-            <div className="mt-8 p-6 bg-blue-50 rounded-2xl border border-blue-100">
-              <h5 className="font-bold text-blue-900 mb-2">Ваш надежный партнер по LED-решениям</h5>
-              <ul className="text-sm text-blue-800 space-y-2">
-                <li>• Официальная работа с НДС — юридическая прозрачность и уверенность</li>
-                <li>• Локальный склад и сервис в РК — быстрый запуск и поддержка без ожидания</li>
-                <li>• Обучение и сопровождение — ваша команда полностью готова к работе с первого дня</li>
-              </ul>
-            </div>
+            <LeadForm title="Заказать расчет" source="contacts_page" buttonText="Отправить заявку" />
           </Reveal>
         </div>
       </div>

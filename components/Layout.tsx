@@ -1,26 +1,26 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MapPin, Menu, MessageCircle, Phone, X } from 'lucide-react';
-import { COMPANY_NAME, NAV_LINKS } from '../constants';
+import { Menu, MessageCircle, Phone, X } from 'lucide-react';
+import { COMPANY_NAME, CONTACTS, NAV_LINKS } from '../constants';
 
 export const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
   return (
-    <nav className="fixed top-0 w-full z-50 glass-effect border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-20">
+    <nav className="fixed top-0 z-50 w-full glass-effect border-b border-gray-200">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-20 justify-between">
           <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center gap-2">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">AL</div>
-              <span className="text-xl font-extrabold tracking-tight text-slate-900 hidden sm:block">
+            <Link to="/" className="flex flex-shrink-0 items-center gap-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-xl font-bold text-white">AL</div>
+              <span className="hidden text-xl font-extrabold tracking-tight text-slate-900 sm:block">
                 ARDI <span className="text-blue-600">LED</span>
               </span>
             </Link>
           </div>
 
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden items-center space-x-8 md:flex">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.path}
@@ -34,13 +34,13 @@ export const Header: React.FC = () => {
             ))}
             <Link
               to="/contacts"
-              className="bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
+              className="rounded-full bg-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-200 transition-all hover:bg-blue-700"
             >
               Заказать расчет
             </Link>
           </div>
 
-          <div className="md:hidden flex items-center">
+          <div className="flex items-center md:hidden">
             <button onClick={() => setIsOpen((current) => !current)} className="text-slate-600" aria-label="Открыть меню">
               {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
@@ -49,23 +49,19 @@ export const Header: React.FC = () => {
       </div>
 
       {isOpen && (
-        <div className="md:hidden bg-white border-b border-gray-100 shadow-xl">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        <div className="border-b border-gray-100 bg-white shadow-xl md:hidden">
+          <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 onClick={() => setIsOpen(false)}
-                className="block px-3 py-4 text-base font-bold text-slate-900 border-b border-gray-50 last:border-0"
+                className="block border-b border-gray-50 px-3 py-4 text-base font-bold text-slate-900 last:border-0"
               >
                 {link.label}
               </Link>
             ))}
-            <Link
-              to="/contacts"
-              onClick={() => setIsOpen(false)}
-              className="block px-3 py-4 text-base font-bold text-blue-600"
-            >
+            <Link to="/contacts" onClick={() => setIsOpen(false)} className="block px-3 py-4 text-base font-bold text-blue-600">
               Заказать расчет
             </Link>
           </div>
@@ -77,22 +73,23 @@ export const Header: React.FC = () => {
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-slate-900 text-white py-16 mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+    <footer className="mt-20 bg-slate-900 py-16 text-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-4">
           <div>
-            <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold">AL</div>
+            <div className="mb-6 flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 font-bold">AL</div>
               <span className="text-xl font-bold tracking-tight">{COMPANY_NAME}</span>
             </div>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              LED-решения для бизнеса: проектирование, поставка, монтаж и поддержка экранов для коммерческих площадок, конференц-залов и мероприятий.
+            <p className="text-sm leading-relaxed text-slate-400">
+              LED-решения для бизнеса: проектирование, поставка, монтаж и поддержка экранов для коммерческих площадок,
+              конференц-залов и мероприятий.
             </p>
           </div>
 
           <div>
-            <h4 className="font-bold mb-6">Разделы</h4>
-            <ul className="space-y-3 text-slate-400 text-sm">
+            <h4 className="mb-6 font-bold">Разделы</h4>
+            <ul className="space-y-3 text-sm text-slate-400">
               <li>
                 <Link to="/" className="hover:text-blue-400">
                   Главная
@@ -108,53 +105,33 @@ export const Footer: React.FC = () => {
                   Контакты
                 </Link>
               </li>
-              <li>
-                <Link to="/contacts" className="hover:text-blue-400">
-                  Заказать расчет
-                </Link>
-              </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold mb-6">Компания</h4>
-            <ul className="space-y-3 text-slate-400 text-sm">
-              <li>
-                <Link to="/cases" className="hover:text-blue-400">
-                  Наши проекты
-                </Link>
-              </li>
-              <li>
-                <Link to="/contacts" className="hover:text-blue-400">
-                  Контакты
-                </Link>
-              </li>
-              <li>
-                <Link to="/admin" className="hover:text-slate-300">
-                  Админ-панель
-                </Link>
-              </li>
+            <h4 className="mb-6 font-bold">Для связи</h4>
+            <ul className="space-y-3 text-sm text-slate-400">
+              <li>Расчет проекта под вашу площадку</li>
+              <li>Подбор конфигурации и сроков</li>
+              <li>Сопровождение после запуска</li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold mb-6">Связаться</h4>
+            <h4 className="mb-6 font-bold">Связаться</h4>
             <div className="space-y-4 text-sm text-slate-400">
-              <a href="tel:+77000000000" className="flex items-center gap-3 hover:text-white">
-                <Phone size={16} /> +7 (700) 000-00-00
+              <a href={`tel:+${CONTACTS.phoneHref}`} className="flex items-center gap-3 hover:text-white">
+                <Phone size={16} /> {CONTACTS.phone}
               </a>
-              <a href="https://wa.me/77000000000" className="flex items-center gap-3 hover:text-white">
+              <a href={CONTACTS.whatsappUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 hover:text-white">
                 <MessageCircle size={16} /> WhatsApp
               </a>
-              <div className="flex items-start gap-3">
-                <MapPin size={16} className="mt-1 flex-shrink-0" />
-                <span>Алматы, пр. Абая, 150</span>
-              </div>
+              <div>Режим работы: {CONTACTS.schedule}</div>
             </div>
           </div>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-slate-800 text-center text-slate-500 text-xs">
+        <div className="mt-16 border-t border-slate-800 pt-8 text-center text-xs text-slate-500">
           © {new Date().getFullYear()} {COMPANY_NAME}. Все права защищены.
         </div>
       </div>
