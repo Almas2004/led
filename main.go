@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -163,6 +164,8 @@ type Lead struct {
 
 type app struct {
 	db         *gorm.DB
+	dbErr      error
+	dbMu       sync.RWMutex
 	http       *http.Client
 	distDir    string
 	startedAt  time.Time
@@ -197,21 +200,28 @@ func main() {
 
 	db, err := connectDB()
 	if err != nil {
-		log.Fatalf("database connection failed: %v", err)
-	}
-
-	sqlDB, err := db.DB()
-	if err != nil {
-		log.Fatalf("database handle failed: %v", err)
-	}
-	defer sqlDB.Close()
-
-	if err := migrate(db); err != nil {
-		log.Fatalf("database migration failed: %v", err)
+		log.Printf("database startup warning: %v", err)
+	} else {
+		sqlDB, dbErr := db.DB()
+		if dbErr != nil {
+			log.Printf("database handle warning: %v", dbErr)
+			db = nil
+			err = dbErr
+		} else {
+			defer sqlDB.Close()
+			if migrateErr := migrate(db); migrateErr != nil {
+				log.Printf("database migration warning: %v", migrateErr)
+				db = nil
+				err = migrateErr
+			} else {
+				err = nil
+			}
+		}
 	}
 
 	application := &app{
 		db:        db,
+		dbErr:     err,
 		http:      &http.Client{Timeout: 8 * time.Second},
 		distDir:   env("DIST_DIR", "./dist"),
 		startedAt: time.Now(),
@@ -443,7 +453,13 @@ func (a *app) serveIndex(c *gin.Context) {
 }
 
 func (a *app) health(c *gin.Context) {
-	sqlDB, err := a.db.DB()
+	db, err := a.ensureDB()
+	if err != nil {
+		respondError(c, http.StatusServiceUnavailable, "database is unavailable")
+		return
+	}
+
+	sqlDB, err := db.DB()
 	if err != nil {
 		respondError(c, http.StatusInternalServerError, "database handle is unavailable")
 		return
@@ -465,9 +481,66 @@ func (a *app) health(c *gin.Context) {
 	})
 }
 
+func (a *app) ensureDB() (*gorm.DB, error) {
+	a.dbMu.RLock()
+	if a.db != nil {
+		db := a.db
+		a.dbMu.RUnlock()
+		return db, nil
+	}
+	a.dbMu.RUnlock()
+
+	a.dbMu.Lock()
+	defer a.dbMu.Unlock()
+
+	if a.db != nil {
+		return a.db, nil
+	}
+
+	db, err := connectDB()
+	if err != nil {
+		a.dbErr = err
+		return nil, err
+	}
+
+	if err := migrate(db); err != nil {
+		a.dbErr = err
+		return nil, err
+	}
+
+	a.db = db
+	a.dbErr = nil
+	return db, nil
+}
+
+func (a *app) dbOrEmpty(c *gin.Context) (*gorm.DB, bool) {
+	db, err := a.ensureDB()
+	if err != nil {
+		log.Printf("database unavailable for %s %s: %v", c.Request.Method, c.Request.URL.Path, err)
+		return nil, false
+	}
+	return db, true
+}
+
+func (a *app) dbOrError(c *gin.Context) (*gorm.DB, bool) {
+	db, err := a.ensureDB()
+	if err != nil {
+		log.Printf("database unavailable for %s %s: %v", c.Request.Method, c.Request.URL.Path, err)
+		respondError(c, http.StatusServiceUnavailable, "database is unavailable")
+		return nil, false
+	}
+	return db, true
+}
+
 func (a *app) listProducts(c *gin.Context) {
+	db, ok := a.dbOrEmpty(c)
+	if !ok {
+		c.JSON(http.StatusOK, []Product{})
+		return
+	}
+
 	var products []Product
-	if err := a.db.Order("sort_order asc, id desc").Find(&products).Error; err != nil {
+	if err := db.Order("sort_order asc, id desc").Find(&products).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
@@ -478,8 +551,13 @@ func (a *app) listProducts(c *gin.Context) {
 }
 
 func (a *app) getProduct(c *gin.Context) {
+	db, ok := a.dbOrError(c)
+	if !ok {
+		return
+	}
+
 	var product Product
-	if err := a.db.Where("slug = ?", c.Param("slug")).First(&product).Error; err != nil {
+	if err := db.Where("slug = ?", c.Param("slug")).First(&product).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
@@ -488,6 +566,11 @@ func (a *app) getProduct(c *gin.Context) {
 }
 
 func (a *app) saveProduct(c *gin.Context) {
+	db, ok := a.dbOrError(c)
+	if !ok {
+		return
+	}
+
 	var product Product
 	if err := bindJSON(c, &product); err != nil {
 		respondError(c, http.StatusBadRequest, err.Error())
@@ -507,7 +590,7 @@ func (a *app) saveProduct(c *gin.Context) {
 		product.LeadTime = 15
 	}
 
-	if err := a.db.Save(&product).Error; err != nil {
+	if err := db.Save(&product).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
@@ -517,11 +600,16 @@ func (a *app) saveProduct(c *gin.Context) {
 }
 
 func (a *app) deleteProduct(c *gin.Context) {
+	db, ok := a.dbOrError(c)
+	if !ok {
+		return
+	}
+
 	id, ok := parseParamID(c)
 	if !ok {
 		return
 	}
-	if err := a.db.Delete(&Product{}, id).Error; err != nil {
+	if err := db.Delete(&Product{}, id).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
@@ -529,8 +617,14 @@ func (a *app) deleteProduct(c *gin.Context) {
 }
 
 func (a *app) listSolutions(c *gin.Context) {
+	db, ok := a.dbOrEmpty(c)
+	if !ok {
+		c.JSON(http.StatusOK, []Solution{})
+		return
+	}
+
 	var items []Solution
-	if err := a.db.Order("featured_order asc, id desc").Find(&items).Error; err != nil {
+	if err := db.Order("featured_order asc, id desc").Find(&items).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
@@ -541,8 +635,13 @@ func (a *app) listSolutions(c *gin.Context) {
 }
 
 func (a *app) getSolution(c *gin.Context) {
+	db, ok := a.dbOrError(c)
+	if !ok {
+		return
+	}
+
 	var item Solution
-	if err := a.db.Where("slug = ?", c.Param("slug")).First(&item).Error; err != nil {
+	if err := db.Where("slug = ?", c.Param("slug")).First(&item).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
@@ -551,6 +650,11 @@ func (a *app) getSolution(c *gin.Context) {
 }
 
 func (a *app) saveSolution(c *gin.Context) {
+	db, ok := a.dbOrError(c)
+	if !ok {
+		return
+	}
+
 	var item Solution
 	if err := bindJSON(c, &item); err != nil {
 		respondError(c, http.StatusBadRequest, err.Error())
@@ -573,7 +677,7 @@ func (a *app) saveSolution(c *gin.Context) {
 		item.LeadTime = 15
 	}
 
-	if err := a.db.Save(&item).Error; err != nil {
+	if err := db.Save(&item).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
@@ -583,11 +687,16 @@ func (a *app) saveSolution(c *gin.Context) {
 }
 
 func (a *app) deleteSolution(c *gin.Context) {
+	db, ok := a.dbOrError(c)
+	if !ok {
+		return
+	}
+
 	id, ok := parseParamID(c)
 	if !ok {
 		return
 	}
-	if err := a.db.Delete(&Solution{}, id).Error; err != nil {
+	if err := db.Delete(&Solution{}, id).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
@@ -595,6 +704,12 @@ func (a *app) deleteSolution(c *gin.Context) {
 }
 
 func (a *app) listCases(c *gin.Context) {
+	db, ok := a.dbOrEmpty(c)
+	if !ok {
+		c.JSON(http.StatusOK, []Case{})
+		return
+	}
+
 	page := envIntFromQuery(c, "page", 1)
 	limit := envIntFromQuery(c, "limit", 24)
 	if limit < 1 {
@@ -604,7 +719,7 @@ func (a *app) listCases(c *gin.Context) {
 		limit = 100
 	}
 
-	query := a.db.Model(&Case{})
+	query := db.Model(&Case{})
 	if c.Query("featured") == "1" || strings.EqualFold(c.Query("featured"), "true") {
 		query = query.Where("is_featured = ?", true)
 	}
@@ -662,8 +777,13 @@ func (a *app) listCases(c *gin.Context) {
 }
 
 func (a *app) getCase(c *gin.Context) {
+	db, ok := a.dbOrError(c)
+	if !ok {
+		return
+	}
+
 	var item Case
-	if err := a.db.Where("slug = ?", c.Param("slug")).First(&item).Error; err != nil {
+	if err := db.Where("slug = ?", c.Param("slug")).First(&item).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
@@ -672,6 +792,11 @@ func (a *app) getCase(c *gin.Context) {
 }
 
 func (a *app) saveCase(c *gin.Context) {
+	db, ok := a.dbOrError(c)
+	if !ok {
+		return
+	}
+
 	var item Case
 	if err := bindJSON(c, &item); err != nil {
 		respondError(c, http.StatusBadRequest, err.Error())
@@ -684,7 +809,7 @@ func (a *app) saveCase(c *gin.Context) {
 		return
 	}
 
-	if err := a.db.Save(&item).Error; err != nil {
+	if err := db.Save(&item).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
@@ -694,11 +819,16 @@ func (a *app) saveCase(c *gin.Context) {
 }
 
 func (a *app) deleteCase(c *gin.Context) {
+	db, ok := a.dbOrError(c)
+	if !ok {
+		return
+	}
+
 	id, ok := parseParamID(c)
 	if !ok {
 		return
 	}
-	if err := a.db.Delete(&Case{}, id).Error; err != nil {
+	if err := db.Delete(&Case{}, id).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
@@ -706,8 +836,13 @@ func (a *app) deleteCase(c *gin.Context) {
 }
 
 func (a *app) listLeads(c *gin.Context) {
+	db, ok := a.dbOrError(c)
+	if !ok {
+		return
+	}
+
 	var leads []Lead
-	if err := a.db.Order("id desc").Find(&leads).Error; err != nil {
+	if err := db.Order("id desc").Find(&leads).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
@@ -715,6 +850,11 @@ func (a *app) listLeads(c *gin.Context) {
 }
 
 func (a *app) createLead(c *gin.Context) {
+	db, ok := a.dbOrError(c)
+	if !ok {
+		return
+	}
+
 	var lead Lead
 	if err := bindJSON(c, &lead); err != nil {
 		respondError(c, http.StatusBadRequest, err.Error())
@@ -729,7 +869,7 @@ func (a *app) createLead(c *gin.Context) {
 		return
 	}
 
-	if err := a.db.Create(&lead).Error; err != nil {
+	if err := db.Create(&lead).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
@@ -739,6 +879,11 @@ func (a *app) createLead(c *gin.Context) {
 }
 
 func (a *app) updateLead(c *gin.Context) {
+	db, ok := a.dbOrError(c)
+	if !ok {
+		return
+	}
+
 	id, ok := parseParamID(c)
 	if !ok {
 		return
@@ -764,7 +909,7 @@ func (a *app) updateLead(c *gin.Context) {
 		return
 	}
 
-	if err := a.db.Model(&Lead{}).Where("id = ?", id).Updates(cleanUpdates).Error; err != nil {
+	if err := db.Model(&Lead{}).Where("id = ?", id).Updates(cleanUpdates).Error; err != nil {
 		respondDBError(c, err)
 		return
 	}
