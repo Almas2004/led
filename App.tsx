@@ -1,10 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Navigate, Routes, Route, useLocation } from 'react-router-dom';
 import { Footer, Header } from './components/Layout';
 import { HomePage } from './pages/HomePage';
-import { CatalogPage } from './pages/CatalogPage';
-import { ProductDetailsPage } from './pages/ProductDetailsPage';
-import { SolutionsPage } from './pages/SolutionsPage';
 import { CasesPage } from './pages/CasesPage';
 import { ContactsPage } from './pages/ContactsPage';
 import { AdminDashboard } from './pages/AdminDashboard';
@@ -28,9 +25,9 @@ const App: React.FC = () => {
       <LayoutWrapper>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/catalog" element={<CatalogPage />} />
-          <Route path="/catalog/:slug" element={<ProductDetailsPage />} />
-          <Route path="/solutions" element={<SolutionsPage />} />
+          <Route path="/catalog" element={<Navigate to="/cases" replace />} />
+          <Route path="/catalog/:slug" element={<Navigate to="/cases" replace />} />
+          <Route path="/solutions" element={<Navigate to="/cases" replace />} />
           <Route path="/cases" element={<CasesPage />} />
           <Route path="/contacts" element={<ContactsPage />} />
           <Route path="/admin" element={<AdminDashboard />} />

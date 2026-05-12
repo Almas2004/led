@@ -1,23 +1,57 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, Zap, Smartphone, ChevronRight, AlertCircle, Image as ImageIcon } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle2, Image as ImageIcon, Layers3, MonitorPlay, ShieldCheck, Wrench, Zap } from 'lucide-react';
 import { api } from '../services/api';
-import { Solution, Case, ScreenType } from '../types';
+import { Case } from '../types';
 import { LeadForm } from '../components/LeadForm';
 import { Reveal } from '../components/Reveal';
 import heroLedPanels from '../assets/hero-led-panels.png';
 
+const pickCaseImage = (images?: string[]) => {
+  return (images ?? []).map((item) => item.trim()).find(Boolean);
+};
+
+const expertiseItems = [
+  {
+    title: 'Проектирование под задачу',
+    text: 'Подбираем формат экрана, шаг пикселя, яркость и конструктив под ваш объект, а не по шаблону.',
+    icon: Layers3,
+  },
+  {
+    title: 'Монтаж и запуск',
+    text: 'Берем на себя сборку, настройку, пусконаладку и подготовку экрана к реальной эксплуатации.',
+    icon: Wrench,
+  },
+  {
+    title: 'Контент и управление',
+    text: 'Подсказываем, как организовать показ, чтобы экран работал на продажи, навигацию и внимание.',
+    icon: MonitorPlay,
+  },
+];
+
+const projectSteps = [
+  {
+    title: 'Бриф и замер',
+    text: 'Уточняем задачу, площадку и формат использования, чтобы сразу считать правильную конфигурацию.',
+  },
+  {
+    title: 'Предложение и визуализация',
+    text: 'Показываем, как экран будет выглядеть в вашем пространстве, и считаем бюджет без лишнего шума.',
+  },
+  {
+    title: 'Поставка, монтаж, сопровождение',
+    text: 'Доводим проект до запуска и остаемся рядом, если понадобится настройка, сервис или расширение системы.',
+  },
+];
+
 export const HomePage: React.FC = () => {
-  const [featuredSolutions, setFeaturedSolutions] = useState<Solution[]>([]);
   const [featuredCases, setFeaturedCases] = useState<Case[]>([]);
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const solutions = await api.getSolutions();
         const cases = await api.getCases({ full: true, featured: true, limit: 4 });
-        setFeaturedSolutions(solutions.filter(s => s.isFeatured).slice(0, 4));
         setFeaturedCases(cases.slice(0, 4));
         setError(false);
       } catch (e) {
@@ -38,42 +72,38 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="pt-20">
-      <section className="relative flex items-center min-h-[85vh] h-auto py-12 sm:py-16 lg:py-0 overflow-x-hidden bg-slate-900">
+      <section className="relative flex min-h-[85vh] items-center overflow-x-hidden bg-slate-900 py-12 sm:py-16 lg:py-0">
         <div className="absolute inset-0 z-0">
-          <img
-            src={heroLedPanels}
-            alt="LED Background"
-            className="w-full h-full object-cover opacity-40"
-          />
+          <img src={heroLedPanels} alt="LED Background" className="h-full w-full object-cover opacity-40" />
         </div>
         <div className="absolute inset-0 z-10 bg-gradient-to-l from-slate-900 via-slate-900/80 to-transparent" />
 
         <div className="relative z-20 w-full">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <Reveal className="max-w-2xl">
-              <span className="inline-block px-4 py-1.5 bg-blue-600/20 text-blue-400 border border-blue-600/30 rounded-full text-xs font-bold tracking-widest uppercase mb-6 animate-pulse">
-                №1 в Казахстане по LED технологиям
+              <span className="mb-6 inline-block rounded-full border border-blue-600/30 bg-blue-600/20 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-blue-400">
+                LED-решения для бизнеса
               </span>
 
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6">
-                Инженерия визуальных решений для вашего <span className="text-blue-500">Бизнеса</span>
+              <h1 className="mb-6 text-4xl font-extrabold leading-tight text-white sm:text-5xl md:text-7xl">
+                Инженерия визуальных решений для вашего <span className="text-blue-500">бизнеса</span>
               </h1>
 
-              <p className="text-base sm:text-xl text-slate-300 mb-8 sm:mb-10 leading-relaxed max-w-lg">
-                Проектируем, поставляем и устанавливаем LED-экраны любой сложности с гарантией 3 года.
+              <p className="mb-8 max-w-lg text-base leading-relaxed text-slate-300 sm:mb-10 sm:text-xl">
+                Проектируем, поставляем и устанавливаем LED-экраны для залов, ритейла, мероприятий и корпоративных площадок с понятным запуском и сервисом.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 pb-2">
+              <div className="flex flex-col gap-4 pb-2 sm:flex-row">
                 <Link
-                  to="/catalog"
-                  className="bg-blue-600 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-2xl text-base sm:text-lg font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-blue-600/30 active:scale-95"
+                  to="/cases"
+                  className="flex items-center justify-center gap-3 rounded-2xl bg-blue-600 px-8 py-4 text-base font-black uppercase tracking-widest text-white shadow-2xl shadow-blue-600/30 transition-all hover:bg-blue-700 active:scale-95 sm:px-10 sm:py-5 sm:text-lg"
                 >
-                  Смотреть каталог <ArrowRight size={20} />
+                  Смотреть кейсы <ArrowRight size={20} />
                 </Link>
 
                 <button
                   onClick={scrollToLeads}
-                  className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 sm:px-10 py-4 sm:py-5 rounded-2xl text-base sm:text-lg font-black uppercase tracking-widest hover:bg-white/20 transition-all flex items-center justify-center active:scale-95"
+                  className="flex items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-8 py-4 text-base font-black uppercase tracking-widest text-white backdrop-blur-md transition-all hover:bg-white/20 active:scale-95 sm:px-10 sm:py-5 sm:text-lg"
                 >
                   Получить расчет
                 </button>
@@ -84,112 +114,147 @@ export const HomePage: React.FC = () => {
       </section>
 
       {error && (
-        <div className="bg-red-50 border-y border-red-100 py-3 flex items-center justify-center gap-3 text-red-600 text-xs font-bold uppercase tracking-widest">
+        <div className="flex items-center justify-center gap-3 border-y border-red-100 bg-red-50 py-3 text-xs font-bold uppercase tracking-widest text-red-600">
           <AlertCircle size={16} />
-          Внимание: Нет связи с сервером базы данных. Контент может быть неактуален.
+          Внимание: нет связи с сервером базы данных. Контент может быть неактуален.
         </div>
       )}
 
-      <section className="py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Reveal className="flex justify-between items-end mb-16">
-            <div>
-              <h2 className="text-4xl font-black text-slate-900 mb-4 uppercase tracking-tight">Готовые решения</h2>
-              <p className="text-slate-500 font-medium">Оптимальные пакеты под типовые задачи с фиксированной ценой.</p>
-            </div>
-            <Link to="/solutions" className="hidden sm:flex items-center gap-2 text-blue-600 font-black uppercase tracking-widest text-xs hover:gap-4 transition-all group">
-              Все решения <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
+      <section className="bg-white py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal className="max-w-3xl">
+            <h2 className="mb-4 text-4xl font-black tracking-tight text-slate-900">Что мы делаем</h2>
+            <p className="text-lg leading-8 text-slate-500">
+              Мы помогаем запускать LED-системы так, чтобы они были красивыми в кадре, устойчивыми в работе и понятными в ежедневном использовании.
+            </p>
           </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {featuredSolutions.length > 0 ? (
-              featuredSolutions.map((s, index) => (
-                <Reveal
-                  key={s.id}
-                  delay={index * 90}
-                  className="hover-lift bg-gray-50 rounded-[2.5rem] overflow-hidden border border-gray-100 hover:shadow-2xl transition-all group"
-                >
-                  <div className="relative h-56">
-                    {s.images?.[0] ? (
-                      <img src={s.images[0]} alt={s.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    ) : (
-                      <div className="w-full h-full bg-slate-200 flex items-center justify-center text-slate-400">
-                        <ImageIcon size={48} />
-                      </div>
-                    )}
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-blue-600 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-600/20">
-                        {s.type === ScreenType.INDOOR ? 'Indoor' : 'Outdoor'}
-                      </span>
-                    </div>
+          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+            {expertiseItems.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <Reveal key={item.title} delay={index * 90} className="rounded-[2rem] border border-slate-200 bg-slate-50 p-8">
+                  <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-600">
+                    <Icon size={28} />
                   </div>
-                  <div className="p-8">
-                    <h3 className="text-2xl font-black mb-3 text-slate-900 leading-tight">{s.name}</h3>
-                    <div className="flex items-center gap-4 text-xs font-bold text-slate-400 mb-6">
-                      <span>{s.width}х{s.height}м</span>
-                      <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-                      <span>P{s.pixelPitch}</span>
-                    </div>
-                    <div className="flex items-center justify-between mt-auto pt-6 border-t border-gray-100">
-                      <div>
-                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Цена пакета от</p>
-                        <p className="text-2xl font-black text-blue-600">{s.priceFrom.toLocaleString()} ₸</p>
-                      </div>
-                      <Link to="/solutions" className="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center hover:bg-blue-600 transition-all shadow-lg active:scale-90">
-                        <ArrowRight size={20} />
-                      </Link>
-                    </div>
-                  </div>
+                  <h3 className="mb-3 text-2xl font-black text-slate-900">{item.title}</h3>
+                  <p className="text-sm leading-7 text-slate-600">{item.text}</p>
                 </Reveal>
-              ))
-            ) : (
-              <Reveal className="col-span-full py-24 text-center bg-gray-50 rounded-[2.5rem] border-2 border-dashed border-gray-200">
-                <div className="flex flex-col items-center gap-6 opacity-30">
-                  <Smartphone size={48} />
-                  <p className="text-slate-500 font-black uppercase tracking-widest text-sm">Добавьте решения в админ-панели</p>
-                </div>
-              </Reveal>
-            )}
+              );
+            })}
           </div>
-
-          <Reveal delay={120} className="mt-12 sm:hidden">
-            <Link to="/solutions" className="block w-full text-center py-5 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-xs">
-              Смотреть все решения
-            </Link>
-          </Reveal>
         </div>
       </section>
 
-      <section id="leads-section" className="py-32 bg-slate-50 scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+      <section className="bg-slate-50 py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-3xl">
+              <h2 className="mb-4 text-4xl font-black tracking-tight text-slate-900">Свежие кейсы</h2>
+              <p className="text-lg leading-8 text-slate-500">
+                Несколько проектов, которые показывают, как экраны ведут себя в реальных залах, шоурумах и коммерческих пространствах.
+              </p>
+            </div>
+            <Link to="/cases" className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-blue-600 transition-all hover:gap-3">
+              Все кейсы <ArrowRight size={18} />
+            </Link>
+          </Reveal>
+
+          <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-4">
+            {featuredCases.length > 0 ? (
+              featuredCases.map((item, index) => {
+                const image = pickCaseImage(item.images);
+
+                return (
+                  <Reveal key={item.id} delay={index * 80} className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+                    <div className="relative h-72 overflow-hidden bg-slate-100">
+                      {image ? (
+                        <img src={image} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-slate-300">
+                          <ImageIcon size={48} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="space-y-4 p-6">
+                      <h3 className="text-2xl font-black leading-tight text-slate-900">{item.title}</h3>
+                      <p className="text-sm leading-7 text-slate-600">{item.result || item.solution || item.task}</p>
+                      <Link
+                        to="/contacts"
+                        className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-sm font-black text-white transition-colors hover:bg-blue-600"
+                      >
+                        Хочу похожий проект
+                        <ArrowRight size={16} />
+                      </Link>
+                    </div>
+                  </Reveal>
+                );
+              })
+            ) : (
+              <Reveal className="col-span-full rounded-[2rem] border-2 border-dashed border-slate-200 bg-white px-6 py-16 text-center">
+                <p className="text-lg font-bold text-slate-500">Кейсы скоро появятся здесь. Сейчас можно оставить заявку и мы подберем решение под ваш объект.</p>
+              </Reveal>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal className="max-w-3xl">
+            <h2 className="mb-4 text-4xl font-black tracking-tight text-slate-900">Как проходит проект</h2>
+            <p className="text-lg leading-8 text-slate-500">
+              Работаем короткими понятными этапами, чтобы вы видели прогресс, понимали бюджет и спокойно запускали объект без затяжек.
+            </p>
+          </Reveal>
+
+          <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3">
+            {projectSteps.map((step, index) => (
+              <Reveal key={step.title} delay={index * 90} className="rounded-[2rem] border border-slate-200 bg-slate-50 p-8">
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-sm font-black text-white">
+                  {index + 1}
+                </div>
+                <h3 className="mb-3 text-2xl font-black text-slate-900">{step.title}</h3>
+                <p className="text-sm leading-7 text-slate-600">{step.text}</p>
+                <div className="mt-6 flex items-center gap-2 text-sm font-bold text-slate-500">
+                  <CheckCircle2 size={16} className="text-blue-600" />
+                  Понятный следующий шаг на каждом этапе
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="leads-section" className="scroll-mt-20 bg-slate-50 py-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 items-center gap-24 lg:grid-cols-2">
             <Reveal>
               <div>
-                <span className="text-blue-600 font-black uppercase tracking-widest text-xs mb-4 block">Бесплатная консультация</span>
-                <h2 className="text-5xl font-black text-slate-900 mb-8 leading-tight">Готовы обсудить ваш проект?</h2>
-                <p className="text-xl text-slate-500 mb-12 font-medium">
-                  Оставьте заявку, и мы бесплатно подготовим коммерческое предложение с расчетом окупаемости для вашего бизнеса.
+                <span className="mb-4 block text-xs font-black uppercase tracking-widest text-blue-600">Бесплатная консультация</span>
+                <h2 className="mb-8 text-5xl font-black leading-tight text-slate-900">Готовы обсудить ваш проект?</h2>
+                <p className="mb-12 text-xl font-medium text-slate-500">
+                  Оставьте заявку, и мы подготовим предложение с конфигурацией, сроками и понятным сценарием запуска под вашу площадку.
                 </p>
 
                 <div className="space-y-6">
-                  <Reveal className="hover-lift flex items-center gap-5 p-6 bg-white rounded-3xl border border-gray-100 shadow-sm transition-all hover:shadow-lg">
-                    <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 flex-shrink-0">
+                  <Reveal className="hover-lift flex items-center gap-5 rounded-3xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-lg">
+                    <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-blue-100 text-blue-600">
                       <ShieldCheck size={28} />
                     </div>
                     <div>
-                      <h4 className="font-black text-slate-900 uppercase text-sm tracking-tight mb-1">Гарантия качества 3 года</h4>
-                      <p className="text-xs text-slate-500 font-medium">Официальный договор и сервисное обслуживание.</p>
+                      <h4 className="mb-1 text-sm font-black uppercase tracking-tight text-slate-900">Гарантия качества 3 года</h4>
+                      <p className="text-xs font-medium text-slate-500">Официальный договор, понятные обязательства и сопровождение после запуска.</p>
                     </div>
                   </Reveal>
 
-                  <Reveal delay={120} className="hover-lift flex items-center gap-5 p-6 bg-white rounded-3xl border border-gray-100 shadow-sm transition-all hover:shadow-lg">
-                    <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center text-green-600 flex-shrink-0">
+                  <Reveal delay={120} className="hover-lift flex items-center gap-5 rounded-3xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-lg">
+                    <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-green-100 text-green-600">
                       <Zap size={28} />
                     </div>
                     <div>
-                      <h4 className="font-black text-slate-900 uppercase text-sm tracking-tight mb-1">Быстрая установка</h4>
-                      <p className="text-xs text-slate-500 font-medium">Срок реализации проекта от 15 рабочих дней.</p>
+                      <h4 className="mb-1 text-sm font-black uppercase tracking-tight text-slate-900">Быстрый запуск объекта</h4>
+                      <p className="text-xs font-medium text-slate-500">Подскажем оптимальную конфигурацию и соберем рабочий план без лишних итераций.</p>
                     </div>
                   </Reveal>
                 </div>
@@ -197,7 +262,7 @@ export const HomePage: React.FC = () => {
             </Reveal>
 
             <Reveal variant="right" delay={120} className="relative">
-              <div className="absolute -inset-4 bg-blue-600/5 rounded-[3rem] -z-10 blur-2xl"></div>
+              <div className="absolute -inset-4 -z-10 rounded-[3rem] bg-blue-600/5 blur-2xl"></div>
               <LeadForm id="home-form" title="Расчет стоимости за 15 минут" source="home_bottom" />
             </Reveal>
           </div>

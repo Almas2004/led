@@ -86,26 +86,26 @@ export const Footer: React.FC = () => {
               <span className="text-xl font-bold tracking-tight">{COMPANY_NAME}</span>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Инженерные LED-решения для бизнеса в Казахстане: от проектирования до сервисного сопровождения.
+              LED-решения для бизнеса: проектирование, поставка, монтаж и поддержка экранов для коммерческих площадок, конференц-залов и мероприятий.
             </p>
           </div>
 
           <div>
-            <h4 className="font-bold mb-6">Продукция</h4>
+            <h4 className="font-bold mb-6">Разделы</h4>
             <ul className="space-y-3 text-slate-400 text-sm">
               <li>
-                <Link to="/catalog?type=indoor" className="hover:text-blue-400">
-                  Indoor экраны
+                <Link to="/" className="hover:text-blue-400">
+                  Главная
                 </Link>
               </li>
               <li>
-                <Link to="/catalog?type=outdoor" className="hover:text-blue-400">
-                  Outdoor экраны
+                <Link to="/cases" className="hover:text-blue-400">
+                  Кейсы
                 </Link>
               </li>
               <li>
-                <Link to="/solutions" className="hover:text-blue-400">
-                  Готовые решения
+                <Link to="/contacts" className="hover:text-blue-400">
+                  Контакты
                 </Link>
               </li>
               <li>
