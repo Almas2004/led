@@ -8,13 +8,7 @@ import { Reveal } from '../components/Reveal';
 
 const cardHeights = ['h-[24rem]', 'h-[30rem]', 'h-[26rem]', 'h-[34rem]'] as const;
 
-const getCardHeight = (index: number, imageCount: number): string => {
-  if (imageCount > 1) {
-    return cardHeights[index % cardHeights.length];
-  }
-
-  return index % 2 === 0 ? 'h-[28rem]' : 'h-[24rem]';
-};
+const getCardHeight = (index: number): string => cardHeights[index % cardHeights.length];
 
 const pickCaseImages = (images: string[] | undefined) => {
   const validImages = (images ?? []).map((item) => item.trim()).filter(Boolean);
@@ -46,11 +40,7 @@ const CaseImage: React.FC<{
 
   return (
     <>
-      <div
-        className={`absolute inset-0 bg-slate-200 transition-opacity duration-500 ${
-          loaded ? 'opacity-0' : 'opacity-100'
-        }`}
-      >
+      <div className={`absolute inset-0 bg-slate-200 transition-opacity duration-500 ${loaded ? 'opacity-0' : 'opacity-100'}`}>
         <div className="h-full w-full animate-pulse bg-gradient-to-br from-slate-200 via-slate-100 to-slate-200" />
       </div>
       <img
@@ -71,7 +61,7 @@ export const CasesPage: React.FC = () => {
   const [cases, setCases] = useState<Case[]>([]);
 
   useEffect(() => {
-    api.getCases({ full: true, limit: 60, page: 1 }).then(setCases);
+    api.getCases({ limit: 36, page: 1 }).then(setCases).catch((error) => console.error('Failed to load cases', error));
   }, []);
 
   return (
@@ -81,8 +71,7 @@ export const CasesPage: React.FC = () => {
           <Reveal className="max-w-3xl">
             <h1 className="text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">Кейсы</h1>
             <p className="mt-5 text-base leading-8 text-slate-500 sm:text-lg">
-              Подборка реализованных проектов с крупными визуалами, деталями монтажа и тем, как экраны живут в реальном
-              пространстве.
+              Подборка реализованных проектов с крупными визуалами, деталями монтажа и тем, как экраны живут в реальном пространстве.
             </p>
           </Reveal>
         </div>
@@ -98,7 +87,6 @@ export const CasesPage: React.FC = () => {
             <div className="columns-1 gap-6 md:columns-2 xl:columns-3 [column-fill:_balance]">
               {cases.map((c, index) => {
                 const { previewImage, secondaryImage } = pickCaseImages(c.images);
-                const cardHeight = getCardHeight(index, c.images?.length ?? 0);
                 const eagerImage = index < 3;
 
                 return (
@@ -108,13 +96,8 @@ export const CasesPage: React.FC = () => {
                     className="mb-6 break-inside-avoid overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.10)] transition-transform duration-300 hover:-translate-y-1"
                   >
                     <article className="overflow-hidden">
-                      <div className={`relative ${cardHeight} overflow-hidden bg-slate-100`}>
-                        <CaseImage
-                          src={previewImage}
-                          alt={c.title}
-                          eager={eagerImage}
-                          className="h-full w-full object-cover hover:scale-105"
-                        />
+                      <div className={`relative ${getCardHeight(index)} overflow-hidden bg-slate-100`}>
+                        <CaseImage src={previewImage} alt={c.title} eager={eagerImage} className="h-full w-full object-cover hover:scale-105" />
 
                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent p-5 text-white sm:p-6">
                           <h2 className="text-2xl font-black leading-tight sm:text-3xl">{c.title}</h2>

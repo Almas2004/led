@@ -15,6 +15,24 @@ export const NAV_LINKS = [
   { label: 'Контакты', path: '/contacts' },
 ];
 
+export const PARTNERS = [
+  {
+    name: 'Dahua Security',
+    href: 'https://www.dahuasecurity.com/ea',
+    logo: 'https://www.dahuasecurity.com/favicon.ico',
+  },
+  {
+    name: 'AL-Style',
+    href: 'https://al-style.kz',
+    logo: 'https://al-style.kz/favicon.ico',
+  },
+  {
+    name: 'Unilumin',
+    href: 'https://www.unilumin.com/',
+    logo: 'https://www.unilumin.com/favicon.ico',
+  },
+] as const;
+
 export const FAQ_ITEMS = [
   {
     q: 'Какой срок службы у ваших экранов?',

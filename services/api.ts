@@ -23,6 +23,11 @@ async function handleResponse<T>(res: Response): Promise<T> {
     } catch {
       errorText = res.statusText;
     }
+
+    if (res.status === 503 && errorText.includes('database is unavailable')) {
+      throw new Error('База данных временно недоступна. Проверьте подключение PostgreSQL на сервере.');
+    }
+
     throw new Error(`Ошибка API (${res.status}): ${errorText}`);
   }
 
@@ -47,7 +52,7 @@ async function safeFetch(url: string, options?: RequestInit) {
   try {
     return await fetch(url, options);
   } catch {
-    console.error(`Network error while fetching ${url}. Убедитесь, что backend запущен.`);
+    console.error(`Network error while fetching ${url}. Backend недоступен.`);
     throw new Error('Сетевая ошибка. Backend недоступен.');
   }
 }

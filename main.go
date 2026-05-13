@@ -179,8 +179,6 @@ type caseListItem struct {
 	Slug        string         `json:"slug"`
 	Title       string         `json:"title"`
 	Result      string         `json:"result"`
-	Task        string         `json:"task"`
-	Solution    string         `gorm:"column:solution_desc" json:"solution"`
 	Images      pq.StringArray `json:"images"`
 	VideoURL    string         `json:"videoUrl,omitempty"`
 	Testimonial string         `json:"testimonial,omitempty"`
@@ -743,9 +741,7 @@ func (a *app) listCases(c *gin.Context) {
 			id,
 			slug,
 			title,
-			result,
-			task,
-			solution_desc,
+			COALESCE(NULLIF(result, ''), NULLIF(solution_desc, ''), NULLIF(task, '')) AS result,
 			images,
 			video_url,
 			testimonial,
@@ -763,11 +759,20 @@ func (a *app) listCases(c *gin.Context) {
 		items[i].Slug = cleanText(items[i].Slug)
 		items[i].Title = cleanText(items[i].Title)
 		items[i].Result = cleanText(items[i].Result)
-		items[i].Task = cleanText(items[i].Task)
-		items[i].Solution = cleanText(items[i].Solution)
 		items[i].Images = ensureStringArray(items[i].Images)
-		if len(items[i].Images) > 1 {
-			items[i].Images = pq.StringArray{items[i].Images[0]}
+		if len(items[i].Images) > 0 {
+			firstImage := ""
+			for _, image := range items[i].Images {
+				if strings.TrimSpace(image) != "" {
+					firstImage = strings.TrimSpace(image)
+					break
+				}
+			}
+			if firstImage != "" {
+				items[i].Images = pq.StringArray{firstImage}
+			} else {
+				items[i].Images = pq.StringArray{}
+			}
 		}
 		items[i].VideoURL = cleanText(items[i].VideoURL)
 		items[i].Testimonial = cleanText(items[i].Testimonial)

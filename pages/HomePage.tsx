@@ -5,6 +5,7 @@ import { api } from '../services/api';
 import { Case } from '../types';
 import { LeadForm } from '../components/LeadForm';
 import { Reveal } from '../components/Reveal';
+import { PARTNERS } from '../constants';
 import heroLedPanels from '../assets/hero-led-panels.png';
 
 const pickCaseImage = (images?: string[]) => {
@@ -46,12 +47,12 @@ const projectSteps = [
 
 export const HomePage: React.FC = () => {
   const [featuredCases, setFeaturedCases] = useState<Case[]>([]);
-  const [error, setError] = useState<boolean>(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const cases = await api.getCases({ full: true, featured: true, limit: 4 });
+        const cases = await api.getCases({ featured: true, limit: 4 });
         setFeaturedCases(cases.slice(0, 4));
         setError(false);
       } catch (e) {
@@ -59,6 +60,7 @@ export const HomePage: React.FC = () => {
         setError(true);
       }
     };
+
     loadData();
   }, []);
 
@@ -74,7 +76,7 @@ export const HomePage: React.FC = () => {
     <div className="pt-20">
       <section className="relative flex min-h-[85vh] items-center overflow-x-hidden bg-slate-900 py-12 sm:py-16 lg:py-0">
         <div className="absolute inset-0 z-0">
-          <img src={heroLedPanels} alt="LED Background" className="h-full w-full object-cover opacity-40" />
+          <img src={heroLedPanels} alt="LED панели ARDI LED" className="h-full w-full object-cover opacity-40" />
         </div>
         <div className="absolute inset-0 z-10 bg-gradient-to-l from-slate-900 via-slate-900/80 to-transparent" />
 
@@ -116,7 +118,7 @@ export const HomePage: React.FC = () => {
       {error && (
         <div className="flex items-center justify-center gap-3 border-y border-red-100 bg-red-50 py-3 text-xs font-bold uppercase tracking-widest text-red-600">
           <AlertCircle size={16} />
-          Внимание: нет связи с сервером базы данных. Контент может быть неактуален.
+          Внимание: база данных временно недоступна. Часть контента может не загрузиться.
         </div>
       )}
 
@@ -148,6 +150,38 @@ export const HomePage: React.FC = () => {
 
       <section className="bg-slate-50 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal className="max-w-3xl">
+            <h2 className="mb-4 text-4xl font-black tracking-tight text-slate-900">Партнеры</h2>
+            <p className="text-lg leading-8 text-slate-500">
+              Работаем с производителями и поставщиками, на которых можно опереться в реальных проектах.
+            </p>
+          </Reveal>
+
+          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+            {PARTNERS.map((partner, index) => (
+              <Reveal key={partner.name} delay={index * 90}>
+                <a
+                  href={partner.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-4 rounded-[2rem] border border-slate-200 bg-white px-6 py-5 shadow-[0_18px_50px_rgba(15,23,42,0.05)] transition-all hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_20px_60px_rgba(15,23,42,0.10)]"
+                >
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-50">
+                    <img src={partner.logo} alt={partner.name} className="h-10 w-10 object-contain" loading="lazy" decoding="async" />
+                  </div>
+                  <div>
+                    <div className="text-lg font-black text-slate-900">{partner.name}</div>
+                    <div className="mt-1 text-sm text-slate-500">Перейти на сайт партнера</div>
+                  </div>
+                </a>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-3xl">
               <h2 className="mb-4 text-4xl font-black tracking-tight text-slate-900">Свежие кейсы</h2>
@@ -169,7 +203,7 @@ export const HomePage: React.FC = () => {
                   <Reveal key={item.id} delay={index * 80} className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
                     <div className="relative h-72 overflow-hidden bg-slate-100">
                       {image ? (
-                        <img src={image} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" />
+                        <img src={image} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" loading={index < 2 ? 'eager' : 'lazy'} />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center text-slate-300">
                           <ImageIcon size={48} />
@@ -192,14 +226,14 @@ export const HomePage: React.FC = () => {
               })
             ) : (
               <Reveal className="col-span-full rounded-[2rem] border-2 border-dashed border-slate-200 bg-white px-6 py-16 text-center">
-                <p className="text-lg font-bold text-slate-500">Кейсы скоро появятся здесь. Сейчас можно оставить заявку и мы подберем решение под ваш объект.</p>
+                <p className="text-lg font-bold text-slate-500">Кейсы скоро появятся здесь. Сейчас можно оставить заявку, и мы подберем решение под ваш объект.</p>
               </Reveal>
             )}
           </div>
         </div>
       </section>
 
-      <section className="bg-white py-24">
+      <section className="bg-slate-50 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal className="max-w-3xl">
             <h2 className="mb-4 text-4xl font-black tracking-tight text-slate-900">Как проходит проект</h2>
@@ -210,7 +244,7 @@ export const HomePage: React.FC = () => {
 
           <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3">
             {projectSteps.map((step, index) => (
-              <Reveal key={step.title} delay={index * 90} className="rounded-[2rem] border border-slate-200 bg-slate-50 p-8">
+              <Reveal key={step.title} delay={index * 90} className="rounded-[2rem] border border-slate-200 bg-white p-8">
                 <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-sm font-black text-white">
                   {index + 1}
                 </div>
