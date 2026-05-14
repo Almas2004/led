@@ -61,7 +61,7 @@ export const CasesPage: React.FC = () => {
   const [cases, setCases] = useState<Case[]>([]);
 
   useEffect(() => {
-    api.getCases({ limit: 36, page: 1 }).then(setCases).catch((error) => console.error('Failed to load cases', error));
+    api.getCases({ full: true, limit: 36, page: 1 }).then(setCases).catch((error) => console.error('Failed to load cases', error));
   }, []);
 
   return (

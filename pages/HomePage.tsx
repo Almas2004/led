@@ -1,16 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertCircle, ArrowRight, CheckCircle2, Image as ImageIcon, Layers3, MonitorPlay, ShieldCheck, Wrench, Zap } from 'lucide-react';
+import {
+  AlertCircle,
+  ArrowRight,
+  CheckCircle2,
+  Image as ImageIcon,
+  Layers3,
+  MonitorPlay,
+  PlayCircle,
+  ShieldCheck,
+  Sparkles,
+  Wrench,
+  Zap,
+} from 'lucide-react';
 import { api } from '../services/api';
 import { Case } from '../types';
 import { LeadForm } from '../components/LeadForm';
 import { Reveal } from '../components/Reveal';
-import { PARTNERS } from '../constants';
 import heroLedPanels from '../assets/hero-led-panels.png';
+import partnerUnilumin from '../assets/partner-unilumin.png';
+import partnerDahua from '../assets/partner-dahua.png';
+import partnerAlstyle from '../assets/partner-alstyle.png';
 
-const pickCaseImage = (images?: string[]) => {
-  return (images ?? []).map((item) => item.trim()).find(Boolean);
-};
+const pickCaseImage = (images?: string[]) => (images ?? []).map((item) => item.trim()).find(Boolean);
 
 const expertiseItems = [
   {
@@ -45,6 +57,33 @@ const projectSteps = [
   },
 ];
 
+const partners = [
+  {
+    name: 'Unilumin',
+    href: 'https://www.unilumin.com/',
+    logo: partnerUnilumin,
+    logoClassName: 'h-10 w-auto',
+  },
+  {
+    name: 'Dahua Security',
+    href: 'https://www.dahuasecurity.com/ea',
+    logo: partnerDahua,
+    logoClassName: 'h-10 w-auto',
+  },
+  {
+    name: 'AL-Style',
+    href: 'https://al-style.kz',
+    logo: partnerAlstyle,
+    logoClassName: 'h-12 w-auto',
+  },
+] as const;
+
+const heroHighlights = [
+  { value: '3 года', label: 'гарантии на запуск и поддержку' },
+  { value: '24/7', label: 'контроль яркости и работы экрана' },
+  { value: '1 проект', label: 'одна команда от идеи до монтажа' },
+];
+
 export const HomePage: React.FC = () => {
   const [featuredCases, setFeaturedCases] = useState<Case[]>([]);
   const [error, setError] = useState(false);
@@ -52,7 +91,7 @@ export const HomePage: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const cases = await api.getCases({ featured: true, limit: 4 });
+        const cases = await api.getCases({ full: true, featured: true, limit: 4 });
         setFeaturedCases(cases.slice(0, 4));
         setError(false);
       } catch (e) {
@@ -74,28 +113,28 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="pt-20">
-      <section className="relative flex min-h-[85vh] items-center overflow-x-hidden bg-slate-900 py-12 sm:py-16 lg:py-0">
+      <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-slate-950">
         <div className="absolute inset-0 z-0">
-          <img src={heroLedPanels} alt="LED панели ARDI LED" className="h-full w-full object-cover opacity-40" />
+          <img src={heroLedPanels} alt="LED панели ARDI LED" className="h-full w-full object-cover object-center opacity-50" />
         </div>
-        <div className="absolute inset-0 z-10 bg-gradient-to-l from-slate-900 via-slate-900/80 to-transparent" />
+        <div className="absolute inset-0 z-10 bg-[radial-gradient(circle_at_72%_30%,rgba(59,130,246,0.26),transparent_28%),linear-gradient(90deg,rgba(2,6,23,0.96)_0%,rgba(2,6,23,0.84)_44%,rgba(2,6,23,0.46)_72%,rgba(2,6,23,0.18)_100%)]" />
 
-        <div className="relative z-20 w-full">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <Reveal className="max-w-2xl">
-              <span className="mb-6 inline-block rounded-full border border-blue-600/30 bg-blue-600/20 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-blue-400">
+        <div className="relative z-20 flex min-h-[calc(100vh-5rem)] items-center">
+          <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 px-4 py-12 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:items-center lg:px-8 lg:py-16">
+            <Reveal className="max-w-3xl">
+              <span className="mb-6 inline-block rounded-full border border-blue-500/30 bg-blue-500/15 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-blue-300">
                 LED-решения для бизнеса
               </span>
 
-              <h1 className="mb-6 text-4xl font-extrabold leading-tight text-white sm:text-5xl md:text-7xl">
+              <h1 className="mb-6 text-4xl font-extrabold leading-[0.95] text-white sm:text-5xl md:text-7xl">
                 Инженерия визуальных решений для вашего <span className="text-blue-500">бизнеса</span>
               </h1>
 
-              <p className="mb-8 max-w-lg text-base leading-relaxed text-slate-300 sm:mb-10 sm:text-xl">
+              <p className="mb-8 max-w-xl text-base leading-relaxed text-slate-200 sm:mb-10 sm:text-xl">
                 Проектируем, поставляем и устанавливаем LED-экраны для залов, ритейла, мероприятий и корпоративных площадок с понятным запуском и сервисом.
               </p>
 
-              <div className="flex flex-col gap-4 pb-2 sm:flex-row">
+              <div className="mb-10 flex flex-col gap-4 sm:flex-row">
                 <Link
                   to="/cases"
                   className="flex items-center justify-center gap-3 rounded-2xl bg-blue-600 px-8 py-4 text-base font-black uppercase tracking-widest text-white shadow-2xl shadow-blue-600/30 transition-all hover:bg-blue-700 active:scale-95 sm:px-10 sm:py-5 sm:text-lg"
@@ -109,6 +148,52 @@ export const HomePage: React.FC = () => {
                 >
                   Получить расчет
                 </button>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                {heroHighlights.map((item) => (
+                  <div key={item.value} className="rounded-[1.5rem] border border-white/10 bg-white/10 px-5 py-4 backdrop-blur-md">
+                    <div className="text-2xl font-black text-white">{item.value}</div>
+                    <div className="mt-2 text-sm leading-6 text-slate-300">{item.label}</div>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+
+            <Reveal variant="right" delay={120} className="hidden lg:block">
+              <div className="relative ml-auto max-w-[34rem]">
+                <div className="absolute -right-10 top-8 h-44 w-44 rounded-full bg-blue-500/20 blur-3xl" />
+                <div className="absolute right-16 top-1/2 h-32 w-32 rounded-full bg-fuchsia-500/20 blur-3xl" />
+
+                <div className="grid gap-5">
+                  <div className="ml-auto max-w-[23rem] rounded-[2rem] border border-white/10 bg-slate-900/65 p-6 text-white shadow-[0_24px_80px_rgba(15,23,42,0.45)] backdrop-blur-xl">
+                    <div className="mb-4 flex items-center gap-3 text-blue-300">
+                      <Sparkles size={18} />
+                      <span className="text-xs font-black uppercase tracking-[0.2em]">Визуальный эффект</span>
+                    </div>
+                    <h3 className="text-2xl font-black leading-tight">Экран становится частью пространства, а не просто оборудованием.</h3>
+                  </div>
+
+                  <div className="grid grid-cols-[1.05fr_0.95fr] gap-5">
+                    <div className="rounded-[2rem] border border-white/10 bg-white/10 p-6 text-white backdrop-blur-xl">
+                      <div className="mb-4 flex items-center gap-3 text-emerald-300">
+                        <ShieldCheck size={18} />
+                        <span className="text-xs font-black uppercase tracking-[0.2em]">Под контролем</span>
+                      </div>
+                      <p className="text-sm leading-7 text-slate-200">
+                        Настройка, монтаж и запуск ведутся одной командой, поэтому проект не рассыпается между подрядчиками.
+                      </p>
+                    </div>
+
+                    <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-6 text-white backdrop-blur-xl">
+                      <div className="mb-4 flex items-center gap-3 text-fuchsia-300">
+                        <PlayCircle size={18} />
+                        <span className="text-xs font-black uppercase tracking-[0.2em]">Контент</span>
+                      </div>
+                      <p className="text-sm leading-7 text-slate-200">Показываем, как экран будет смотреться в живом сценарии еще до монтажа.</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </Reveal>
           </div>
@@ -152,27 +237,19 @@ export const HomePage: React.FC = () => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal className="max-w-3xl">
             <h2 className="mb-4 text-4xl font-black tracking-tight text-slate-900">Партнеры</h2>
-            <p className="text-lg leading-8 text-slate-500">
-              Работаем с производителями и поставщиками, на которых можно опереться в реальных проектах.
-            </p>
+            <p className="text-lg leading-8 text-slate-500">Работаем с брендами и поставщиками, на которых можно уверенно опираться в реальных проектах.</p>
           </Reveal>
 
           <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {PARTNERS.map((partner, index) => (
+            {partners.map((partner, index) => (
               <Reveal key={partner.name} delay={index * 90}>
                 <a
                   href={partner.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-4 rounded-[2rem] border border-slate-200 bg-white px-6 py-5 shadow-[0_18px_50px_rgba(15,23,42,0.05)] transition-all hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_20px_60px_rgba(15,23,42,0.10)]"
+                  className="flex min-h-36 items-center justify-center rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_18px_50px_rgba(15,23,42,0.05)] transition-all hover:-translate-y-1 hover:border-blue-200 hover:shadow-[0_20px_60px_rgba(15,23,42,0.10)]"
                 >
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-50">
-                    <img src={partner.logo} alt={partner.name} className="h-10 w-10 object-contain" loading="lazy" decoding="async" />
-                  </div>
-                  <div>
-                    <div className="text-lg font-black text-slate-900">{partner.name}</div>
-                    <div className="mt-1 text-sm text-slate-500">Перейти на сайт партнера</div>
-                  </div>
+                  <img src={partner.logo} alt={partner.name} className={partner.logoClassName} loading="lazy" decoding="async" />
                 </a>
               </Reveal>
             ))}
@@ -185,9 +262,7 @@ export const HomePage: React.FC = () => {
           <Reveal className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-3xl">
               <h2 className="mb-4 text-4xl font-black tracking-tight text-slate-900">Свежие кейсы</h2>
-              <p className="text-lg leading-8 text-slate-500">
-                Несколько проектов, которые показывают, как экраны ведут себя в реальных залах, шоурумах и коммерческих пространствах.
-              </p>
+              <p className="text-lg leading-8 text-slate-500">Несколько проектов, которые показывают, как экраны ведут себя в реальных залах, шоурумах и коммерческих пространствах.</p>
             </div>
             <Link to="/cases" className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-blue-600 transition-all hover:gap-3">
               Все кейсы <ArrowRight size={18} />
@@ -237,17 +312,13 @@ export const HomePage: React.FC = () => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal className="max-w-3xl">
             <h2 className="mb-4 text-4xl font-black tracking-tight text-slate-900">Как проходит проект</h2>
-            <p className="text-lg leading-8 text-slate-500">
-              Работаем короткими понятными этапами, чтобы вы видели прогресс, понимали бюджет и спокойно запускали объект без затяжек.
-            </p>
+            <p className="text-lg leading-8 text-slate-500">Работаем короткими понятными этапами, чтобы вы видели прогресс, понимали бюджет и спокойно запускали объект без затяжек.</p>
           </Reveal>
 
           <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3">
             {projectSteps.map((step, index) => (
               <Reveal key={step.title} delay={index * 90} className="rounded-[2rem] border border-slate-200 bg-white p-8">
-                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-sm font-black text-white">
-                  {index + 1}
-                </div>
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-sm font-black text-white">{index + 1}</div>
                 <h3 className="mb-3 text-2xl font-black text-slate-900">{step.title}</h3>
                 <p className="text-sm leading-7 text-slate-600">{step.text}</p>
                 <div className="mt-6 flex items-center gap-2 text-sm font-bold text-slate-500">
