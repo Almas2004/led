@@ -112,15 +112,23 @@ export const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="pt-20">
-      <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-slate-950">
+    <div>
+      <style>
+        {`
+          @keyframes heroFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+          }
+        `}
+      </style>
+      <section className="relative min-h-screen overflow-hidden bg-slate-950">
         <div className="absolute inset-0 z-0">
           <img src={heroLedPanels} alt="LED панели ARDI LED" className="h-full w-full object-cover object-center opacity-50" />
         </div>
         <div className="absolute inset-0 z-10 bg-[radial-gradient(circle_at_72%_30%,rgba(59,130,246,0.26),transparent_28%),linear-gradient(90deg,rgba(2,6,23,0.96)_0%,rgba(2,6,23,0.84)_44%,rgba(2,6,23,0.46)_72%,rgba(2,6,23,0.18)_100%)]" />
 
-        <div className="relative z-20 flex min-h-[calc(100vh-5rem)] items-center">
-          <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 px-4 py-12 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:items-center lg:px-8 lg:py-16">
+        <div className="relative z-20 flex min-h-screen items-center">
+          <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-10 px-4 pb-12 pt-28 sm:px-6 sm:pb-16 sm:pt-32 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.9fr)] lg:items-center lg:px-8 lg:pb-16 lg:pt-28">
             <Reveal className="max-w-3xl">
               <span className="mb-6 inline-block rounded-full border border-blue-500/30 bg-blue-500/15 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-blue-300">
                 LED-решения для бизнеса
@@ -134,17 +142,17 @@ export const HomePage: React.FC = () => {
                 Проектируем, поставляем и устанавливаем LED-экраны для залов, ритейла, мероприятий и корпоративных площадок с понятным запуском и сервисом.
               </p>
 
-              <div className="mb-10 flex flex-col gap-4 sm:flex-row">
+              <div className="mb-8 flex flex-col gap-3 sm:flex-row">
                 <Link
                   to="/cases"
-                  className="flex items-center justify-center gap-3 rounded-2xl bg-blue-600 px-8 py-4 text-base font-black uppercase tracking-widest text-white shadow-2xl shadow-blue-600/30 transition-all hover:bg-blue-700 active:scale-95 sm:px-10 sm:py-5 sm:text-lg"
+                  className="flex items-center justify-center gap-3 rounded-2xl bg-blue-600 px-6 py-3.5 text-sm font-black uppercase tracking-widest text-white shadow-2xl shadow-blue-600/30 transition-all hover:bg-blue-700 active:scale-95 sm:px-8 sm:py-4 sm:text-base"
                 >
                   Смотреть кейсы <ArrowRight size={20} />
                 </Link>
 
                 <button
                   onClick={scrollToLeads}
-                  className="flex items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-8 py-4 text-base font-black uppercase tracking-widest text-white backdrop-blur-md transition-all hover:bg-white/20 active:scale-95 sm:px-10 sm:py-5 sm:text-lg"
+                  className="flex items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-black uppercase tracking-widest text-white backdrop-blur-md transition-all hover:bg-white/20 active:scale-95 sm:px-8 sm:py-4 sm:text-base"
                 >
                   Получить расчет
                 </button>
@@ -161,36 +169,45 @@ export const HomePage: React.FC = () => {
             </Reveal>
 
             <Reveal variant="right" delay={120} className="hidden lg:block">
-              <div className="relative ml-auto max-w-[34rem]">
+              <div className="relative ml-auto max-w-[31rem]">
                 <div className="absolute -right-10 top-8 h-44 w-44 rounded-full bg-blue-500/20 blur-3xl" />
                 <div className="absolute right-16 top-1/2 h-32 w-32 rounded-full bg-fuchsia-500/20 blur-3xl" />
 
-                <div className="grid gap-5">
-                  <div className="ml-auto max-w-[23rem] rounded-[2rem] border border-white/10 bg-slate-900/65 p-6 text-white shadow-[0_24px_80px_rgba(15,23,42,0.45)] backdrop-blur-xl">
+                <div className="grid gap-4">
+                  <div
+                    className="ml-auto max-w-[19rem] rounded-[1.6rem] border border-white/10 bg-slate-900/65 p-4 text-white shadow-[0_24px_80px_rgba(15,23,42,0.45)] backdrop-blur-xl"
+                    style={{ animation: 'heroFloat 6s ease-in-out infinite' }}
+                  >
                     <div className="mb-4 flex items-center gap-3 text-blue-300">
-                      <Sparkles size={18} />
+                      <Sparkles size={16} />
                       <span className="text-xs font-black uppercase tracking-[0.2em]">Визуальный эффект</span>
                     </div>
-                    <h3 className="text-2xl font-black leading-tight">Экран становится частью пространства, а не просто оборудованием.</h3>
+                    <h3 className="text-lg font-black leading-snug">Экран становится частью пространства, а не просто оборудованием.</h3>
                   </div>
 
-                  <div className="grid grid-cols-[1.05fr_0.95fr] gap-5">
-                    <div className="rounded-[2rem] border border-white/10 bg-white/10 p-6 text-white backdrop-blur-xl">
-                      <div className="mb-4 flex items-center gap-3 text-emerald-300">
-                        <ShieldCheck size={18} />
+                  <div className="grid grid-cols-[1.05fr_0.95fr] gap-4">
+                    <div
+                      className="rounded-[1.6rem] border border-white/10 bg-white/10 p-4 text-white backdrop-blur-xl"
+                      style={{ animation: 'heroFloat 7s ease-in-out infinite', animationDelay: '0.8s' }}
+                    >
+                      <div className="mb-3 flex items-center gap-3 text-emerald-300">
+                        <ShieldCheck size={16} />
                         <span className="text-xs font-black uppercase tracking-[0.2em]">Под контролем</span>
                       </div>
-                      <p className="text-sm leading-7 text-slate-200">
+                      <p className="text-xs leading-6 text-slate-200">
                         Настройка, монтаж и запуск ведутся одной командой, поэтому проект не рассыпается между подрядчиками.
                       </p>
                     </div>
 
-                    <div className="rounded-[2rem] border border-white/10 bg-slate-900/70 p-6 text-white backdrop-blur-xl">
-                      <div className="mb-4 flex items-center gap-3 text-fuchsia-300">
-                        <PlayCircle size={18} />
+                    <div
+                      className="rounded-[1.6rem] border border-white/10 bg-slate-900/70 p-4 text-white backdrop-blur-xl"
+                      style={{ animation: 'heroFloat 6.5s ease-in-out infinite', animationDelay: '1.6s' }}
+                    >
+                      <div className="mb-3 flex items-center gap-3 text-fuchsia-300">
+                        <PlayCircle size={16} />
                         <span className="text-xs font-black uppercase tracking-[0.2em]">Контент</span>
                       </div>
-                      <p className="text-sm leading-7 text-slate-200">Показываем, как экран будет смотреться в живом сценарии еще до монтажа.</p>
+                      <p className="text-xs leading-6 text-slate-200">Показываем, как экран будет смотреться в живом сценарии еще до монтажа.</p>
                     </div>
                   </div>
                 </div>
