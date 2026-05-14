@@ -28,7 +28,10 @@ const TAB_LABELS: Record<AdminTab, string> = {
   cases: 'Кейсы',
 };
 
-const defaultError = 'Не удалось загрузить данные. Проверьте подключение и учетные данные администратора.';
+const defaultError =
+  '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u0434\u0430\u043d\u043d\u044b\u0435. \u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u0435 \u0438 \u0443\u0447\u0435\u0442\u043d\u044b\u0435 \u0434\u0430\u043d\u043d\u044b\u0435 \u0430\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440\u0430.';
+const databaseUnavailableError =
+  '\u0411\u0430\u0437\u0430 \u0434\u0430\u043d\u043d\u044b\u0445 \u0432\u0440\u0435\u043c\u0435\u043d\u043d\u043e \u043d\u0435\u0434\u043e\u0441\u0442\u0443\u043f\u043d\u0430. \u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 DATABASE_URL \u0438 \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u0435 PostgreSQL \u043d\u0430 \u0441\u0435\u0440\u0432\u0435\u0440\u0435.';
 
 export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('leads');
@@ -96,7 +99,13 @@ export const AdminDashboard: React.FC = () => {
     } catch (err) {
       console.error(err);
       const message = err instanceof Error ? err.message : defaultError;
-      setError(message.includes('401') ? 'Доступ запрещен. Войдите как администратор.' : defaultError);
+      if (message.includes('401')) {
+        setError('\u0414\u043e\u0441\u0442\u0443\u043f \u0437\u0430\u043f\u0440\u0435\u0449\u0435\u043d. \u0412\u043e\u0439\u0434\u0438\u0442\u0435 \u043a\u0430\u043a \u0430\u0434\u043c\u0438\u043d\u0438\u0441\u0442\u0440\u0430\u0442\u043e\u0440.');
+      } else if (message.includes('\u0411\u0430\u0437\u0430 \u0434\u0430\u043d\u043d\u044b\u0445 \u0432\u0440\u0435\u043c\u0435\u043d\u043d\u043e \u043d\u0435\u0434\u043e\u0441\u0442\u0443\u043f\u043d\u0430') || message.includes('database is unavailable')) {
+        setError(databaseUnavailableError);
+      } else {
+        setError(defaultError);
+      }
       setIsBackendOnline(false);
       if (message.includes('401')) {
         setIsAuthorized(false);

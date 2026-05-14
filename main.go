@@ -238,13 +238,16 @@ func main() {
 }
 
 func connectDB() (*gorm.DB, error) {
+	return connectDBWithAttempts(envInt("DB_CONNECT_ATTEMPTS", 5))
+}
+
+func connectDBWithAttempts(attempts int) (*gorm.DB, error) {
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
 		dsn = "host=127.0.0.1 user=postgres password=postgres dbname=ledvision port=5432 sslmode=disable TimeZone=Asia/Almaty"
 	}
 
 	var lastErr error
-	attempts := envInt("DB_CONNECT_ATTEMPTS", 5)
 	if attempts < 1 {
 		attempts = 1
 	}
@@ -495,7 +498,7 @@ func (a *app) ensureDB() (*gorm.DB, error) {
 		return a.db, nil
 	}
 
-	db, err := connectDB()
+	db, err := connectDBWithAttempts(1)
 	if err != nil {
 		a.dbErr = err
 		return nil, err
