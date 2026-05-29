@@ -6,6 +6,7 @@ env:
 on:
   push:
     branches: ["main"]
+  workflow_dispatch:
 
 jobs:
   verify:
@@ -44,12 +45,24 @@ jobs:
 
       - name: Fail if required secrets are missing
         env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+          SERVER_PATH: ${{ secrets.SERVER_PATH }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
+          test -n "$DOCKERHUB_USERNAME"
+          test -n "$DOCKERHUB_TOKEN"
+          test -n "$SERVER_HOST"
+          test -n "$SERVER_USER"
+          test -n "$SERVER_PASSWORD"
+          test -n "$SERVER_PATH"
           test -n "$DATABASE_URL"
           test -n "$ADMIN_USERNAME"
           test -n "$ADMIN_PASSWORD"
@@ -134,3 +147,16 @@ jobs:
             sudo docker compose up -d --force-recreate --remove-orphans
             sudo docker image prune -f
             sudo docker ps
+
+      - name: Health check
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        run: |
+          for i in 1 2 3 4 5 6; do
+            if curl --fail --silent --show-error --max-time 10 "http://${SERVER_HOST}:8082/" > /dev/null; then
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Application did not become reachable on http://${SERVER_HOST}:8082/"
+          exit 1
