@@ -19,16 +19,20 @@ const pickCaseImages = (images: string[] | undefined) => {
 };
 
 const CaseImage: React.FC<{
-  src?: string;
+  sources?: string[];
   alt: string;
   className: string;
   eager?: boolean;
-}> = ({ src, alt, className, eager = false }) => {
+}> = ({ sources, alt, className, eager = false }) => {
   const [loaded, setLoaded] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const validSources = (sources ?? []).map((item) => item.trim()).filter(Boolean);
+  const src = validSources[currentIndex];
 
   useEffect(() => {
     setLoaded(false);
-  }, [src]);
+    setCurrentIndex(0);
+  }, [sources]);
 
   if (!src) {
     return (
@@ -50,7 +54,13 @@ const CaseImage: React.FC<{
         fetchPriority={eager ? 'high' : 'auto'}
         decoding="async"
         onLoad={() => setLoaded(true)}
-        onError={() => setLoaded(true)}
+        onError={() => {
+          if (currentIndex < validSources.length - 1) {
+            setCurrentIndex((index) => index + 1);
+            return;
+          }
+          setLoaded(true);
+        }}
         className={`${className} transition-all duration-700 ${loaded ? 'scale-100 opacity-100' : 'scale-[1.02] opacity-0'}`}
       />
     </>
@@ -86,7 +96,7 @@ export const CasesPage: React.FC = () => {
           ) : (
             <div className="columns-1 gap-6 md:columns-2 xl:columns-3 [column-fill:_balance]">
               {cases.map((c, index) => {
-                const { previewImage, secondaryImage } = pickCaseImages(c.images);
+                const { secondaryImage } = pickCaseImages(c.images);
                 const eagerImage = index < 3;
 
                 return (
@@ -97,7 +107,7 @@ export const CasesPage: React.FC = () => {
                   >
                     <article className="overflow-hidden">
                       <div className={`relative ${getCardHeight(index)} overflow-hidden bg-slate-100`}>
-                        <CaseImage src={previewImage} alt={c.title} eager={eagerImage} className="h-full w-full object-cover hover:scale-105" />
+                        <CaseImage sources={c.images} alt={c.title} eager={eagerImage} className="h-full w-full object-cover hover:scale-105" />
 
                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent p-5 text-white sm:p-6">
                           <h2 className="text-2xl font-black leading-tight sm:text-3xl">{c.title}</h2>
@@ -109,7 +119,7 @@ export const CasesPage: React.FC = () => {
 
                         {secondaryImage && (
                           <div className="relative overflow-hidden rounded-[1.5rem] bg-slate-100">
-                            <CaseImage src={secondaryImage} alt={c.title} className="h-48 w-full object-cover" />
+                            <CaseImage sources={[secondaryImage]} alt={c.title} className="h-48 w-full object-cover" />
                           </div>
                         )}
 
