@@ -1,35 +1,503 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ARDI LED - LED экраны: продажа и монтаж</title>
+    <title>LED-экраны под ключ для бизнеса | ARDI LED</title>
     <meta
       name="description"
-      content="Проектирование, поставка и монтаж LED-экранов для бизнеса в Казахстане."
+      content="Проектируем, поставляем и внедряем LED-решения для ритейла, мероприятий и коммерческих пространств с гарантированным запуском и сервисом по всему Казахстану."
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-      rel="stylesheet"
+    <meta
+      name="keywords"
+      content="LED-экраны, LED экран Казахстан, LED экраны под ключ, аренда LED экранов, продажа LED экранов, медиафасады, сценические LED решения"
     />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      html { scroll-behavior: smooth; }
-      body { font-family: 'Inter', sans-serif; }
-      .glass-effect { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
-      .hover-lift { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
-      .hover-lift:hover { transform: translateY(-6px); }
-      @media (prefers-reduced-motion: reduce) {
-        html { scroll-behavior: auto; }
-        .hover-lift,
-        .hover-lift:hover { transition: none; transform: none; }
-      }
-    </style>
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#060b17" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="LED-экраны под ключ для бизнеса | ARDI LED" />
+    <meta
+      property="og:description"
+      content="Внедряем LED-решения для ритейла, мероприятий и коммерческих пространств с визуализацией, монтажом и сервисом."
+    />
+    <meta property="og:image" content="assets/images/hero-led-panels.png" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:url" content="https://your-domain.kz/" />
+    <link rel="canonical" href="https://your-domain.kz/" />
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script defer src="js/main.js"></script>
   </head>
-  <body class="bg-gray-50 text-slate-900 overflow-x-hidden">
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+  <body>
+    <header class="site-header" id="top">
+      <div class="container header-inner">
+        <a class="brand" href="#hero" aria-label="ARDI LED">
+          <span class="brand-mark">AL</span>
+          <span class="brand-copy">
+            <strong>ARDI LED</strong>
+            <small>LED-решения для бизнеса</small>
+          </span>
+        </a>
+
+        <nav class="desktop-nav" aria-label="Основная навигация">
+          <a href="#hero">Главная</a>
+          <a href="#portfolio">Кейсы</a>
+          <a href="#services">Решения</a>
+          <a href="#benefits">О компании</a>
+          <a href="#contacts">Контакты</a>
+        </nav>
+
+        <div class="header-actions">
+          <a class="button button-primary button-small" href="#lead-form">Рассчитать проект</a>
+          <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Открыть меню">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mobile-menu" id="mobile-menu">
+        <a href="#hero">Главная</a>
+        <a href="#portfolio">Кейсы</a>
+        <a href="#services">Решения</a>
+        <a href="#benefits">О компании</a>
+        <a href="#contacts">Контакты</a>
+        <a class="button button-primary" href="#lead-form">Рассчитать проект</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="hero">
+        <div class="hero-backdrop" aria-hidden="true">
+          <div class="hero-media" data-parallax-layer data-depth="5"></div>
+          <div class="hero-overlay"></div>
+          <div class="hero-grid"></div>
+          <div class="hero-beam hero-beam-a" data-parallax-layer data-depth="14"></div>
+          <div class="hero-beam hero-beam-b" data-parallax-layer data-depth="10"></div>
+          <div class="hero-glow hero-glow-a"></div>
+          <div class="hero-glow hero-glow-b"></div>
+        </div>
+
+        <div class="container">
+          <div class="hero-panel">
+            <div class="hero-layout">
+          <div class="hero-copy reveal">
+            <span class="eyebrow eyebrow-dark">Проектируем • Поставляем • Внедряем • Сопровождаем</span>
+            <h1>
+              LED-экраны
+              <br />
+              под ключ для
+              <br />
+              <span class="hero-accent">бизнеса</span>
+            </h1>
+            <p class="hero-lead">
+              Проектируем, поставляем и внедряем LED-решения для ритейла, мероприятий и коммерческих пространств с гарантированным запуском и сервисом.
+            </p>
+            <p class="hero-sublead">
+              Увеличивайте вовлеченность клиентов, усиливайте визуальное присутствие бренда и управляйте контентом в реальном времени.
+            </p>
+
+            <div class="hero-actions">
+              <a class="button button-primary" href="#lead-form">Получить коммерческое предложение за 24 часа</a>
+              <a class="button button-secondary" href="#lead-form">Рассчитать стоимость проекта</a>
+            </div>
+          </div>
+
+          <div class="hero-stage reveal" data-parallax>
+            <div class="hero-stage-shell glass-card" data-parallax-layer data-depth="16">
+              <img
+                src="assets/images/hero-led-panels.png"
+                alt="Премиальный LED-экран для бизнеса и мероприятий"
+                width="1200"
+                height="675"
+                fetchpriority="high"
+              />
+            </div>
+          </div>
+
+          <aside class="hero-side reveal">
+            <article class="hero-feature glass-card" data-parallax-layer data-depth="8">
+              <span class="hero-feature-icon"></span>
+              <div>
+                <h3>Интеграция в архитектуру</h3>
+                <p>Подбираем экран так, чтобы он усиливал пространство и органично встраивался в объект.</p>
+              </div>
+            </article>
+            <article class="hero-feature glass-card" data-parallax-layer data-depth="12">
+              <span class="hero-feature-icon"></span>
+              <div>
+                <h3>Визуализация до монтажа</h3>
+                <p>Показываем, как будет выглядеть решение до старта работ и финального запуска.</p>
+              </div>
+            </article>
+            <article class="hero-feature glass-card" data-parallax-layer data-depth="16">
+              <span class="hero-feature-icon"></span>
+              <div>
+                <h3>Управление 24/7</h3>
+                <p>Обеспечиваем полный цикл реализации, поддержку системы и уверенную эксплуатацию каждый день.</p>
+              </div>
+            </article>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="hero-metrics">
+        <div class="container stats-grid bento-grid bento-grid-stats reveal">
+          <article class="stat-item stat-item-primary">
+            <strong data-counter="50">0</strong>
+            <span>проектов с реализованным результатом</span>
+          </article>
+          <article class="stat-item">
+            <strong data-counter="10000">0</strong>
+            <span>м² LED-экранов для бизнеса и площадок</span>
+          </article>
+          <article class="stat-item stat-item-compact">
+            <strong>до 30</strong>
+            <span>дней на реализацию и запуск проекта</span>
+          </article>
+          <article class="stat-item stat-item-accent">
+            <strong data-counter="3">0</strong>
+            <span>года гарантии и сервисного сопровождения</span>
+          </article>
+          <article class="stat-item stat-item-compact">
+            <strong>24/7</strong>
+            <span>управление, поддержка и консультации</span>
+          </article>
+          <article class="stat-item">
+            <strong>КЗ</strong>
+            <span>работаем по всему Казахстану без потери темпа</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-dark" id="benefits">
+        <div class="container">
+          <div class="section-heading reveal">
+            <span class="eyebrow eyebrow-dark">Почему мы</span>
+            <h2>Мы не продаем оборудование. Мы внедряем систему, которая работает на результат.</h2>
+            <p>
+              Берем на себя техническую логику, визуальную часть и контроль реализации, чтобы заказчик получил не набор модулей, а готовое решение под задачи бизнеса.
+            </p>
+          </div>
+
+          <div class="benefits-grid bento-grid bento-grid-benefits">
+            <article class="benefit-card benefit-card-feature reveal">
+              <h3>Полный цикл без подрядчиков</h3>
+              <p>Одна команда отвечает за проектирование, поставку, монтаж, запуск и дальнейшее сопровождение.</p>
+            </article>
+            <article class="benefit-card reveal">
+              <h3>Инженерная экспертиза</h3>
+              <p>Подбираем шаг пикселя, яркость, конструкцию и систему управления под конкретный сценарий.</p>
+            </article>
+            <article class="benefit-card benefit-card-accent reveal">
+              <h3>Контроль на каждом этапе</h3>
+              <p>Прозрачно ведем проект от первого брифа до ввода в эксплуатацию и передачи заказчику.</p>
+            </article>
+            <article class="benefit-card reveal">
+              <h3>Гарантия и сервис</h3>
+              <p>Остаемся на связи после запуска, обеспечиваем обслуживание и быструю реакцию на запросы.</p>
+            </article>
+            <article class="benefit-card benefit-card-wide reveal">
+              <h3>Реализация сложных проектов</h3>
+              <p>Работаем с коммерческими пространствами, площадками событий и объектами с высокими требованиями.</p>
+            </article>
+            <article class="benefit-card reveal">
+              <h3>Минимальные риски</h3>
+              <p>Визуализируем результат заранее и собираем понятную дорожную карту со сроками и ответственностью.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-dark-alt" id="portfolio">
+        <div class="container">
+          <div class="section-heading reveal">
+            <span class="eyebrow eyebrow-dark">Кейсы и доверие</span>
+            <h2>Реализованные проекты и опыт, на который можно опираться в коммерческих задачах.</h2>
+            <p>
+              Мы внедряем LED-решения для коммерческих объектов, обеспечивая стабильную работу, предсказуемый результат и уверенный визуальный эффект.
+            </p>
+          </div>
+
+          <div class="portfolio-grid bento-grid bento-grid-portfolio">
+            <article class="portfolio-card portfolio-card-hero reveal">
+              <div class="portfolio-visual gradient-a" aria-hidden="true"></div>
+              <div class="portfolio-body">
+                <h3>ТРЦ и ритейл</h3>
+                <p>Экранные решения для витрин, торговых галерей и общественных зон, где важны трафик, навигация и заметность бренда.</p>
+              </div>
+            </article>
+            <article class="portfolio-card reveal">
+              <div class="portfolio-visual gradient-b" aria-hidden="true"></div>
+              <div class="portfolio-body">
+                <h3>Конференц-залы и event-площадки</h3>
+                <p>Сценические и интерьерные LED-системы для форумов, деловых событий и презентаций с яркой подачей контента.</p>
+              </div>
+            </article>
+            <article class="portfolio-card portfolio-card-accent reveal">
+              <div class="portfolio-visual gradient-c" aria-hidden="true"></div>
+              <div class="portfolio-body">
+                <h3>Корпоративные и спортивные объекты</h3>
+                <p>Проекты для штаб-квартир, бизнес-центров и спортивных пространств, где важны надежность, масштаб и непрерывная работа.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-dark" id="services">
+        <div class="container split-layout split-layout-bento">
+          <div class="split-copy reveal">
+            <span class="eyebrow eyebrow-dark">Наши решения</span>
+            <h2>Подбираем формат LED-системы под объект, сценарий контента и бизнес-цель.</h2>
+            <p>
+              Помогаем выбрать не просто экран, а рабочую конфигурацию под ритейл, корпоративное пространство, мероприятие или сложный архитектурный объект.
+            </p>
+            <ul class="check-list">
+              <li>LED-экраны для помещений</li>
+              <li>Уличные LED-экраны</li>
+              <li>Сценические LED-решения</li>
+              <li>Медиафасады</li>
+              <li>AV и интеграционные решения</li>
+            </ul>
+          </div>
+
+          <div class="services-grid bento-grid bento-grid-services">
+            <article class="service-card service-card-feature reveal">
+              <h3>Для ритейла и ТРЦ</h3>
+              <p>Экранные решения для витрин, галерей, рекламных поверхностей и зон высокой проходимости.</p>
+            </article>
+            <article class="service-card reveal">
+              <h3>Для мероприятий и сцен</h3>
+              <p>Модульные системы для форумов, концертов, презентаций и временных инсталляций с быстрым запуском.</p>
+            </article>
+            <article class="service-card service-card-accent reveal">
+              <h3>Для корпоративных объектов</h3>
+              <p>Решения для конференц-залов, бизнес-центров и публичных пространств с управлением контентом 24/7.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-dark-alt" id="process">
+        <div class="container">
+          <div class="section-heading reveal">
+            <span class="eyebrow eyebrow-dark">Процесс работы</span>
+            <h2>Как мы реализуем проекты: от анализа задачи до сервиса после запуска.</h2>
+            <p>На каждом этапе держим в фокусе сроки, качество внедрения и минимальные риски для заказчика.</p>
+          </div>
+
+          <div class="process-timeline bento-grid bento-grid-process">
+            <article class="process-step process-step-feature reveal">
+              <span>01</span>
+              <h3>Анализ задач и проектирование</h3>
+              <p>Погружаемся в объект, сценарий использования и требования к визуальному результату.</p>
+            </article>
+            <article class="process-step reveal">
+              <span>02</span>
+              <h3>Визуализация и расчет</h3>
+              <p>Готовим понятную модель решения, состав оборудования, стоимость и план внедрения.</p>
+            </article>
+            <article class="process-step reveal">
+              <span>03</span>
+              <h3>Поставка оборудования</h3>
+              <p>Организуем логистику, координируем сроки и подготавливаем площадку к установке.</p>
+            </article>
+            <article class="process-step process-step-accent reveal">
+              <span>04</span>
+              <h3>Монтаж и интеграция</h3>
+              <p>Собираем систему, подключаем оборудование и встраиваем решение в инфраструктуру объекта.</p>
+            </article>
+            <article class="process-step reveal">
+              <span>05</span>
+              <h3>Пуско-наладка</h3>
+              <p>Тестируем работу, настраиваем контент и доводим систему до уверенного рабочего состояния.</p>
+            </article>
+            <article class="process-step reveal">
+              <span>06</span>
+              <h3>Сервис и поддержка</h3>
+              <p>Сопровождаем проект после запуска, чтобы решение работало стабильно и без простоев.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-dark" id="use-cases">
+        <div class="container">
+          <div class="section-heading reveal">
+            <span class="eyebrow eyebrow-dark">Для кого</span>
+            <h2>Кому подойдут наши решения</h2>
+            <p>Работаем с объектами, где визуальная коммуникация напрямую влияет на восприятие бренда, поток людей и результат бизнеса.</p>
+          </div>
+
+          <div class="use-cases-grid bento-grid bento-grid-cases">
+            <article class="case-chip case-chip-feature reveal">Девелоперы и ТРЦ</article>
+            <article class="case-chip reveal">Event-агентства</article>
+            <article class="case-chip reveal">Государственные заказчики</article>
+            <article class="case-chip case-chip-accent reveal">Бизнес-центры</article>
+            <article class="case-chip reveal">Спортивные организации</article>
+            <article class="case-chip reveal">Конференц-залы</article>
+            <article class="case-chip reveal">Корпоративные пространства</article>
+            <article class="case-chip case-chip-wide reveal">Коммерческие объекты</article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-dark-alt" id="lead-form">
+        <div class="container split-layout split-layout-bento">
+          <div class="split-copy reveal">
+            <span class="eyebrow eyebrow-dark">Лидогенерация</span>
+            <h2>Получите расчет проекта</h2>
+            <p>
+              Оставьте заявку — подготовим решение под ваш объект. Вы получите расчет стоимости, визуализацию, подбор оборудования и консультацию инженера в срок до 24 часов.
+            </p>
+            <ul class="check-list">
+              <li>Расчет стоимости</li>
+              <li>Визуализация</li>
+              <li>Подбор оборудования</li>
+              <li>Консультация инженера</li>
+              <li>Бесплатная консультация</li>
+              <li>Без обязательств. Работаем по всему Казахстану</li>
+            </ul>
+          </div>
+
+          <div class="lead-card reveal">
+            <form class="lead-form" id="whatsapp-form">
+              <div class="field-grid">
+                <label>
+                  <span>Имя</span>
+                  <input type="text" name="name" placeholder="Ваше имя" required />
+                </label>
+                <label>
+                  <span>Телефон</span>
+                  <input type="tel" name="phone" placeholder="+7 777 000 00 00" required />
+                </label>
+                <label>
+                  <span>Город</span>
+                  <input type="text" name="city" placeholder="Алматы" />
+                </label>
+                <label>
+                  <span>Тип экрана</span>
+                  <select name="screen">
+                    <option value="">Выберите вариант</option>
+                    <option>LED-экран для помещения</option>
+                    <option>Уличный LED-экран</option>
+                    <option>Сценическое LED-решение</option>
+                    <option>Медиафасад</option>
+                    <option>AV и интеграционное решение</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Покупка или аренда</span>
+                  <select name="format">
+                    <option value="">Выберите формат</option>
+                    <option>Покупка</option>
+                    <option>Аренда</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Комментарий</span>
+                  <textarea name="comment" rows="5" placeholder="Опишите объект, задачу, размеры или желаемые сроки запуска"></textarea>
+                </label>
+              </div>
+
+              <button class="button button-primary" type="submit">Получить коммерческое предложение</button>
+              <p class="form-note">После нажатия откроется WhatsApp с уже подготовленным сообщением по вашему проекту.</p>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-dark" id="faq">
+        <div class="container">
+          <div class="section-heading reveal">
+            <span class="eyebrow eyebrow-dark">FAQ</span>
+            <h2>Коротко о стоимости, сроках и формате работы.</h2>
+          </div>
+
+          <div class="faq-list">
+            <article class="faq-item reveal">
+              <button class="faq-trigger" type="button" aria-expanded="false">Сколько стоит LED-экран?</button>
+              <div class="faq-panel">
+                <p>Стоимость зависит от размера, шага пикселя, яркости, формата установки и сценария эксплуатации. Мы считаем проект под задачу и даем понятный расчет.</p>
+              </div>
+            </article>
+            <article class="faq-item reveal">
+              <button class="faq-trigger" type="button" aria-expanded="false">Можно ли взять экран в аренду?</button>
+              <div class="faq-panel">
+                <p>Да. Подбираем арендные комплекты для форумов, выставок, презентаций, концертов и корпоративных событий.</p>
+              </div>
+            </article>
+            <article class="faq-item reveal">
+              <button class="faq-trigger" type="button" aria-expanded="false">Сколько занимает монтаж?</button>
+              <div class="faq-panel">
+                <p>Срок зависит от масштаба объекта, подготовки площадки и конфигурации системы. Для типовых решений график можно сформировать уже на старте.</p>
+              </div>
+            </article>
+            <article class="faq-item reveal">
+              <button class="faq-trigger" type="button" aria-expanded="false">Можно ли установить экран на улице?</button>
+              <div class="faq-panel">
+                <p>Да. Подбираем уличные решения с нужной яркостью, степенью защиты и конструктивом под климатические условия объекта.</p>
+              </div>
+            </article>
+            <article class="faq-item reveal">
+              <button class="faq-trigger" type="button" aria-expanded="false">Есть ли гарантия?</button>
+              <div class="faq-panel">
+                <p>Да. Предоставляем гарантию на оборудование и работы, а также сопровождаем проект после запуска.</p>
+              </div>
+            </article>
+            <article class="faq-item reveal">
+              <button class="faq-trigger" type="button" aria-expanded="false">Работаете ли по Казахстану?</button>
+              <div class="faq-panel">
+                <p>Да. Работаем по всему Казахстану, подстраивая логистику, монтаж и сервис под конкретный объект.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-dark-alt" id="final-cta">
+        <div class="container">
+          <div class="final-cta-card reveal">
+            <span class="eyebrow eyebrow-dark">Финальный шаг</span>
+            <h2>Получите консультацию и коммерческое предложение под ваш объект.</h2>
+            <p>
+              Расскажите, какую задачу должен решать экран, а мы подготовим решение под пространство, бюджет и сроки запуска без лишних этапов.
+            </p>
+            <div class="final-actions">
+              <a class="button button-primary" href="#lead-form">Получить консультацию</a>
+              <a class="button button-secondary" href="https://api.whatsapp.com/send/?phone=77769879977&amp;text&amp;type=phone_number&amp;app_absent=0" target="_blank" rel="noopener">Открыть WhatsApp</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="contacts">
+      <div class="container footer-layout">
+        <div class="footer-brand">
+          <div class="brand">
+            <span class="brand-mark">AL</span>
+            <span class="brand-copy">
+              <strong>ARDI LED</strong>
+              <small>LED-решения для бизнеса</small>
+            </span>
+          </div>
+          <p class="footer-text">
+            Проектируем, поставляем и внедряем LED-решения для ритейла, мероприятий и коммерческих пространств с гарантированным запуском и сервисом.
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <h3>Контакты</h3>
+          <p><a href="tel:+77769879977">+7 776 987 9977</a></p>
+          <p><a href="https://api.whatsapp.com/send/?phone=77769879977&amp;text&amp;type=phone_number&amp;app_absent=0" target="_blank" rel="noopener">WhatsApp</a></p>
+          <p><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a></p>
+          <p>Алматы, Казахстан</p>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

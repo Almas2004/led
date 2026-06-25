@@ -1,162 +1,38 @@
-name: Build & Deploy
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+name: Deploy Static Site to GitHub Pages
 
 on:
   push:
     branches: ["main"]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
-  verify:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-          cache: "npm"
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: go.mod
-
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Type check frontend
-        run: npx tsc --noEmit
-
-      - name: Build frontend
-        run: npx vite build
-
-      - name: Test backend
-        run: go test ./...
-
-  build-and-push:
-    runs-on: ubuntu-latest
-    needs: verify
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Fail if required secrets are missing
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-          SERVER_HOST: ${{ secrets.SERVER_HOST }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-          SERVER_PATH: ${{ secrets.SERVER_PATH }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          test -n "$DOCKERHUB_USERNAME"
-          test -n "$DOCKERHUB_TOKEN"
-          test -n "$SERVER_HOST"
-          test -n "$SERVER_USER"
-          test -n "$SERVER_PASSWORD"
-          test -n "$SERVER_PATH"
-          test -n "$DATABASE_URL"
-          test -n "$ADMIN_USERNAME"
-          test -n "$ADMIN_PASSWORD"
-          test -n "$TELEGRAM_BOT_TOKEN"
-          test -n "$TELEGRAM_CHAT_ID"
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build & Push image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/ledvision:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/ledvision:${{ github.sha }}
-
   deploy:
     runs-on: ubuntu-latest
-    needs: build-and-push
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Deploy on server
-        uses: appleboy/ssh-action@v1.0.3
-        env:
-          IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/ledvision:latest
-          APP_PORT: "8082"
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          script_stop: true
-          envs: IMAGE_NAME,APP_PORT,DATABASE_URL,ADMIN_USERNAME,ADMIN_PASSWORD,TELEGRAM_BOT_TOKEN,TELEGRAM_CHAT_ID
-          script: |
-            set -e
-            sudo mkdir -p ${{ secrets.SERVER_PATH }}
-            sudo chown -R ${{ secrets.SERVER_USER }}:${{ secrets.SERVER_USER }} ${{ secrets.SERVER_PATH }}
-            cd ${{ secrets.SERVER_PATH }}
-            if ! command -v docker >/dev/null 2>&1; then
-              sudo apt-get update
-              sudo apt-get install -y ca-certificates curl gnupg
-              sudo install -m 0755 -d /etc/apt/keyrings
-              curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-              sudo chmod a+r /etc/apt/keyrings/docker.gpg
-              echo \
-                "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-                $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-                sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-              sudo apt-get update
-              sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-              sudo usermod -aG docker ${{ secrets.SERVER_USER }}
-            fi
-            IMAGE_NAME_VALUE="$(printf '%s' "$IMAGE_NAME" | tr -d '\r\n')"
-            APP_PORT_VALUE="$(printf '%s' "$APP_PORT" | tr -d '\r\n')"
-            DATABASE_URL_VALUE="$(printf '%s' "$DATABASE_URL" | tr -d '\r\n')"
-            ADMIN_USERNAME_VALUE="$(printf '%s' "$ADMIN_USERNAME" | tr -d '\r\n')"
-            ADMIN_PASSWORD_VALUE="$(printf '%s' "$ADMIN_PASSWORD" | tr -d '\r\n')"
-            TELEGRAM_BOT_TOKEN_VALUE="$(printf '%s' "$TELEGRAM_BOT_TOKEN" | tr -d '\r\n')"
-            TELEGRAM_CHAT_ID_VALUE="$(printf '%s' "$TELEGRAM_CHAT_ID" | tr -d '\r\n')"
-            cat > docker-compose.yml <<'EOF'
-            services:
-              ledvision:
-                image: ${IMAGE_NAME}
-                restart: unless-stopped
-                ports:
-                  - "${APP_PORT:-8082}:8082"
-                env_file:
-                  - .env
-            EOF
-            printf '%s\n' "IMAGE_NAME=${IMAGE_NAME_VALUE}" "APP_PORT=${APP_PORT_VALUE}" "DATABASE_URL=${DATABASE_URL_VALUE}" "ADMIN_USERNAME=${ADMIN_USERNAME_VALUE}" "ADMIN_PASSWORD=${ADMIN_PASSWORD_VALUE}" "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN_VALUE}" "TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID_VALUE}" > .env
-            sudo docker compose pull || sudo docker compose pull
-            sudo docker compose up -d --force-recreate --remove-orphans
-            sudo docker image prune -f
-            sudo docker ps
+          path: .
 
-      - name: Health check
-        env:
-          SERVER_HOST: ${{ secrets.SERVER_HOST }}
-        run: |
-          for i in 1 2 3 4 5 6; do
-            if curl --fail --silent --show-error --max-time 10 "http://${SERVER_HOST}:8082/" > /dev/null; then
-              exit 0
-            fi
-            sleep 5
-          done
-          echo "Application did not become reachable on http://${SERVER_HOST}:8082/"
-          exit 1
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
