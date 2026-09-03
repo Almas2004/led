@@ -1,0 +1,9 @@
+
+{
+  "name": "LED Vision Kazakhstan CMS & Store",
+  "description": "Профессиональный многостраничный сайт для компании по продаже и установке LED-экранов с полнофункциональной админ-панелью для управления каталогом, кейсами и лидами.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

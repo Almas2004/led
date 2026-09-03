@@ -1,54 +1,94 @@
-# ARDI LED — статический сайт для GitHub Pages
+# ARDI LED
 
-Полностью статический сайт для продажи и аренды LED-экранов.  
-Технологии: `HTML`, `CSS`, `Vanilla JavaScript`.
+Сайт-каталог и административная панель для LED-экранов с Go backend и React/Vite frontend.
 
-## Структура проекта
+## Стек
 
-- `index.html`
-- `css/style.css`
-- `js/main.js`
-- `assets/images`
-- `assets/icons`
-- `assets/video`
+- Frontend: React, TypeScript, Vite
+- Backend: Go, Gin, GORM, PostgreSQL
+- Уведомления: Telegram Bot API
 
-## Что сделано
+## Локальный запуск
 
-- полностью убраны React и Go backend
-- удалены API-зависимости и серверная логика
-- форма заявок работает через WhatsApp-ссылку
-- сайт открывается простым запуском `index.html`
-- добавлены SEO-мета-теги, Open Graph и favicon
-- есть адаптивность, анимации, FAQ, sticky header, counters и parallax
+1. Установите зависимости:
+   ```bash
+   npm install
+   ```
+2. Скопируйте `.env.example` в `.env` и заполните значения:
+   - `DATABASE_URL`
+   - `ADMIN_USERNAME`
+   - `ADMIN_PASSWORD`
+   - `TELEGRAM_BOT_TOKEN`
+   - `TELEGRAM_CHAT_ID`
+3. Запустите frontend в режиме разработки:
+   ```bash
+   npm run dev
+   ```
+4. Запустите backend:
+   ```bash
+   go run .
+   ```
 
-## Локальная проверка
+## Production checklist
 
-Никакой сервер не нужен.
+- Убедитесь, что `GIN_MODE=release`
+- Используйте отдельную production базу данных
+- Задайте надежные `ADMIN_USERNAME` и `ADMIN_PASSWORD`
+- Используйте актуальный Telegram bot token и `TELEGRAM_CHAT_ID`
+- Выполните frontend build:
+  ```bash
+  node node_modules/vite/bin/vite.js build
+  ```
+- Проверьте backend тесты:
+  ```bash
+  go test ./...
+  ```
 
-1. Открой `index.html` двойным кликом.
-2. Проверь навигацию по секциям.
-3. Проверь форму WhatsApp.
-4. Проверь мобильную версию через DevTools.
+## CI/CD и миграции
 
-## Как загрузить на GitHub Pages
+Схема базы обновляется автоматически при старте backend через `AutoMigrate`.
 
-### Вариант 1. Через GitHub Actions
+Это значит:
 
-1. Загрузи проект в GitHub.
-2. Открой репозиторий.
-3. Перейди в `Settings` → `Pages`.
-4. В блоке `Build and deployment` выбери `GitHub Actions`.
-5. После этого каждый push в `main` будет публиковать сайт автоматически.
+- `DATABASE_URL` все равно обязателен
+- отдельную ручную команду миграции запускать не нужно
+- после деплоя новый контейнер стартует, подключается к production БД и сам приводит таблицы к актуальной схеме
 
-### Вариант 2. Без workflow
+Для GitHub Actions добавьте secrets:
 
-1. Открой `Settings` → `Pages`.
-2. В `Source` выбери `Deploy from a branch`.
-3. Укажи ветку `main` и папку `/root`.
-4. Сохрани настройки.
+- `DOCKERHUB_USERNAME`
+- `DOCKERHUB_TOKEN`
+- `SERVER_HOST`
+- `SERVER_USER`
+- `SERVER_PASSWORD`
+- `SERVER_PATH`
+- `DATABASE_URL`
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD`
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_CHAT_ID`
 
-## Контакты
+Pipeline делает:
 
-- Телефон: `+7 776 987 9977`
-- WhatsApp: `https://api.whatsapp.com/send/?phone=77769879977&text&type=phone_number&app_absent=0`
-- Город: Алматы
+1. `npm ci`
+2. `tsc --noEmit`
+3. `vite build`
+4. `go test ./...`
+5. сборку и push Docker image
+6. запись production env на сервер
+7. `docker-compose up -d --remove-orphans`
+
+Если `docker-compose` на сервере использует `.env`, backend автоматически получит `DATABASE_URL` и прогонит миграции при старте.
+
+## Админка
+
+- URL: `/admin`
+- Доступ только по Basic Auth через `ADMIN_USERNAME` и `ADMIN_PASSWORD`
+- Все операции изменения контента и просмотр заявок защищены авторизацией
+
+## Telegram
+
+Все публичные формы отправляют заявки в backend, а backend отправляет уведомление в Telegram, используя:
+
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_CHAT_ID`
